@@ -1,0 +1,17 @@
+---
+import Layout from '@layouts/Layout.astro';
+import ToSContent from '@components/ToSContent.svelte';
+import Footer from '@components/ui/Footer.svelte';
+---
+
+<Layout title="Terms of Service | The Goy Company">
+  <main
+    class="min-h-screen bg-zinc-50 text-zinc-900 font-mono selection:bg-zinc-900 selection:text-zinc-50 transition-colors duration-300"
+  >
+    <div class="py-12 md:py-24">
+      <ToSContent client:load />
+    </div>
+
+    <Footer />
+  </main>
+</Layout>

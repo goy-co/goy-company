@@ -7,6 +7,12 @@
   "scripts": {
     "dev:corporate": "pnpm --filter corporate-site dev",
     "build:corporate": "pnpm --filter corporate-site build",
+    "dev:identity": "pnpm --filter identity-app dev",
+    "build:identity": "pnpm --filter identity-app build",
     "preview:corporate": "pnpm --filter corporate-site preview"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5",
+    "wrangler": "^4.85.0"
   }
 }

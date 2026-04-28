@@ -1,0 +1,183 @@
+import { generateSecretKey, getPublicKey } from 'nostr-tools';
+import { Relay } from 'nostr-tools/relay';
+
+export const PRIMAL_RELAY = 'wss://relay.primal.net';
+export const API_GATEWAY = 'https://api-worker.goycompany.workers.dev'; // Placeholder for production
+
+export const DEFAULT_RELAYS = [
+  PRIMAL_RELAY,
+  'wss://relay.damus.io',
+  'wss://nos.lol'
+];
+
+export function generateIdentity() {
+  const privkey = generateSecretKey();
+  const pubkey = getPublicKey(privkey);
+  
+  const toHex = (bytes: Uint8Array) => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  return {
+    privkey: toHex(privkey),
+    pubkey
+  };
+}
+
+export async function getPublicKeyFromExtension(): Promise<string> {
+  if (typeof window === 'undefined' || !(window as any).nostr) {
+    throw new Error('Nostr extension not found');
+  }
+  
+  try {
+    const pubkey = await (window as any).nostr.getPublicKey();
+    return pubkey;
+  } catch (error) {
+    throw new Error('Failed to get public key from extension');
+  }
+}
+
+export function hasNostrExtension(): boolean {
+  return typeof window !== 'undefined' && !!(window as any).nostr;
+}
+
+/**
+ * Maps Nostr Event Kinds to human readable technical actions
+ */
+export function mapEventToAction(event: any): string {
+  switch (event.kind) {
+    case 0: return 'IDENTITY_METADATA_UPDATE';
+    case 1: return 'TEXT_NOTE_BROADCAST';
+    case 3: return 'SOCIAL_GRAPH_SYNCHRONIZATION';
+    case 6: return 'REPOST_TRANSMISSION';
+    case 7: return 'REACTION_ACKNOWLEDGED';
+    default: return `EVENT_KIND_${event.kind}_DETECTED`;
+  }
+}
+
+/**
+ * Fetches profile metadata and contact list.
+ * Strategy: Tries API Worker first (Edge Cache), fallbacks to Direct Relays.
+ */
+export async function fetchFullIdentity(pubkey: string, options: { useGateway?: boolean, gatewayUrl?: string } = {}) {
+  const { useGateway = true, gatewayUrl = API_GATEWAY } = options;
+
+  if (useGateway && typeof window !== 'undefined') {
+    try {
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : gatewayUrl;
+      const url = host.includes('?') ? `${host}&profile=${pubkey}` : `${host}/profile/${pubkey}`;
+      // Fix URL building for gateway with existing params
+      const finalUrl = host.includes('?') 
+        ? `${host.split('?')[0]}/profile/${pubkey}?${host.split('?')[1]}`
+        : `${host}/profile/${pubkey}`;
+
+      const res = await fetch(finalUrl, { signal: AbortSignal.timeout(4000) });
+      if (res.ok) {
+        const data = await res.json();
+        return { 
+          metadata: data.metadata, 
+          following: data.social?.following || 0, 
+          followers: data.social?.followers || 0,
+          network: data.network || null
+        };
+      }
+    } catch (e) {
+      console.warn('Grid Edge unreachable, failing back to Sovereign Mode');
+    }
+  }
+
+  // Fallback: Direct Relay Fetch (Sovereign Mode)
+  const fetchFromRelay = async (url: string) => {
+    let relay: any = null;
+    let isFinished = false;
+
+    return new Promise((resolve) => {
+      const results: any = { metadata: null, following: 0 };
+      const cleanup = () => {
+        if (isFinished) return;
+        isFinished = true;
+        try { if (relay && relay.connected) relay.close(); } catch (e) {}
+        resolve(results);
+      };
+      const timeout = setTimeout(cleanup, 2500);
+
+      Relay.connect(url).then((connectedRelay) => {
+        relay = connectedRelay;
+        const sub = relay.subscribe([{ kinds: [0, 3], authors: [pubkey], limit: 2 }], {
+          onevent(event) {
+            if (event.kind === 0) { try { results.metadata = JSON.parse(event.content); } catch {} }
+            if (event.kind === 3) { results.following = event.tags.filter((t: any) => t[0] === 'p').length; }
+          },
+          ononeose() { sub.close(); cleanup(); }
+        });
+      }).catch(cleanup);
+    });
+  };
+
+  const results = await Promise.all(DEFAULT_RELAYS.map(r => fetchFromRelay(r)));
+  const finalMetadata = (results as any[]).find(r => r?.metadata)?.metadata || null;
+  const finalFollowing = Math.max(...(results as any[]).map(r => r?.following || 0));
+  
+  return { metadata: finalMetadata, following: finalFollowing, followers: 0, network: null };
+}
+
+/**
+ * Submits an application to become a Ghost Operator.
+ * Requires a signed Nostr event as proof of identity.
+ */
+export async function applyAsGhostOperator(event: any, details: { infrastructure: string, experience: string, nip05?: string }) {
+  try {
+    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : API_GATEWAY;
+    const res = await fetch(`${host}/ghost-operator/apply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event, details })
+    });
+    
+    return await res.json();
+  } catch (e) {
+    throw new Error('GRID_TRANSMISSION_FAILED');
+  }
+}
+
+/**
+ * Subscribes to identity updates and user activity
+ */
+export async function subscribeToIdentity(pubkey: string, callback: (data: any) => void, relays: string[] = DEFAULT_RELAYS) {
+  const activeRelays: any[] = [];
+  const activeSubs: any[] = [];
+  let lastTimestamps: Record<number, number> = {};
+
+  relays.forEach(async (url) => {
+    try {
+      const relay = await Relay.connect(url);
+      activeRelays.push(relay);
+
+      const sub = relay.subscribe([
+        { kinds: [0, 1, 3, 6, 7], authors: [pubkey], limit: 10 }
+      ], {
+        onevent(event) {
+          callback({ type: 'activity', content: event });
+          if (event.kind === 0 && (!lastTimestamps[0] || event.created_at > lastTimestamps[0])) {
+            lastTimestamps[0] = event.created_at;
+            try {
+              const metadata = JSON.parse(event.content);
+              callback({ type: 'metadata', content: metadata, rawEvent: event });
+            } catch {}
+          }
+          if (event.kind === 3 && (!lastTimestamps[3] || event.created_at > lastTimestamps[3])) {
+            lastTimestamps[3] = event.created_at;
+            const following = event.tags.filter(t => t[0] === 'p').length;
+            callback({ type: 'following', content: following });
+          }
+        }
+      });
+      activeSubs.push(sub);
+    } catch (e) {
+      console.warn(`Failed to connect live link to ${url}`);
+    }
+  });
+
+  return () => {
+    activeSubs.forEach(s => { try { s.close(); } catch {} });
+    activeRelays.forEach(r => { try { r.close(); } catch {} });
+  };
+}

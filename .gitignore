@@ -34,3 +34,8 @@ blob-report/
 playwright/.cache/
 .superpowers/
 .gemini/
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+worker-configuration.d.ts

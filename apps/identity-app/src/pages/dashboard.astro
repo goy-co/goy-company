@@ -1,0 +1,11 @@
+---
+import IdentityLayout from '../layouts/IdentityLayout.astro';
+import DashboardConsole from '../components/DashboardConsole.svelte';
+---
+
+<IdentityLayout title="Grid Console // Goy Identity">
+  <main class="min-h-full w-full flex items-start justify-center p-6 md:p-12 bg-zinc-950">
+    <!-- client:only ensures NO SSR, fixing hydration mismatches and session dependency issues -->
+    <DashboardConsole client:only="svelte" />
+  </main>
+</IdentityLayout>

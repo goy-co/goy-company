@@ -13,12 +13,32 @@
       "id": "identity_cache_v1"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "ASSETS",
+      "bucket_name": "goy-assets-v1"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "goy-db",
       "database_id": "goy_db_v1",
       "migrations_dir": "./migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NOSTR_AGENT",
+        "class_name": "NostrAgent"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["NostrAgent"]
     }
   ],
   "vars": {

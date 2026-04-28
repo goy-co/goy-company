@@ -1,12 +1,10 @@
 ---
 import IdentityLayout from '../layouts/IdentityLayout.astro';
+import NodesDashboard from '../components/NodesDashboard.svelte';
 ---
 
-<IdentityLayout title="Nodes // Goy Identity">
-  <main class="h-full w-full flex items-center justify-center p-6 bg-zinc-950">
-    <div class="text-center space-y-4">
-      <h1 class="text-4xl font-black uppercase text-white tracking-tighter">Node_Configuration</h1>
-      <p class="text-zinc-500 font-mono text-xs uppercase tracking-[0.3em] animate-pulse">>>> Scanning_Global_Relays...</p>
-    </div>
+<IdentityLayout title="Node Configuration // Goy Identity">
+  <main class="min-h-full w-full flex items-start justify-center p-6 md:p-12 bg-zinc-950">
+    <NodesDashboard client:only="svelte" />
   </main>
 </IdentityLayout>

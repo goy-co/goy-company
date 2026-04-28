@@ -2,9 +2,13 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
+  import LogDetailModal from './ui/LogDetailModal.svelte';
+  import EditProfileModal from './ui/EditProfileModal.svelte';
 
   // UI Local States
   let showLogoutModal = $state(false);
+  let showEditModal = $state(false);
+  let selectedLog = $state<any>(null);
   let avatarLoaded = $state(false);
   let bannerLoaded = $state(false);
   let toast = $state<{ message: string; visible: boolean }>({ message: '', visible: false });
@@ -168,7 +172,10 @@
           >
             Copy Pubkey
           </button>
-          <button class="border-2 border-zinc-700 text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:border-white transition-all">
+          <button 
+            onclick={() => showEditModal = true}
+            class="border-2 border-zinc-700 text-white px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:border-white transition-all"
+          >
             Edit Profile
           </button>
         </div>
@@ -179,7 +186,7 @@
           <h2 class="text-3xl font-black uppercase tracking-tighter text-white flex items-center gap-3">
             {grid.profile.name || 'ANONYMOUS_ENTITY'}
             {#if grid.profile.nip05}
-              <div class="w-2.5 h-2.5 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)]" title="Verified Sovereign (NIP-05)"></div>
+              <div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]" title="Verified Sovereign (NIP-05)"></div>
             {/if}
           </h2>
           <span class="text-[11px] font-black text-zinc-500 uppercase tracking-[0.2em] mt-1 block">
@@ -212,24 +219,59 @@
   <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
     <main class="col-span-12 md:col-span-8 space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-        <div class="bg-zinc-950 border-2 border-zinc-800 p-8 flex flex-col justify-between group">
-          <header class="flex justify-between items-start">
-            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Equity_Balance // Verified</span>
-            <div class="text-[10px] font-black text-white bg-zinc-800 px-2 py-1">LIQUID_NETWORK</div>
+        <div class="bg-zinc-950 border-2 border-zinc-800 flex flex-col group relative overflow-hidden">
+          <!-- Background Decoration -->
+          <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-[60px] pointer-events-none"></div>
+          
+          <header class="p-6 border-b border-zinc-900 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">Secure_Wallet // Liquid_Uplink</span>
+            </div>
+            <span class="text-[8px] font-black text-zinc-600 uppercase tabular-nums">ID: {grid.profile.pubkey.slice(0, 12)}</span>
           </header>
           
-          <div class="py-8">
-            <h3 class="text-5xl font-black tracking-tighter text-white tabular-nums">
-              1,242.42<span class="text-zinc-600 ml-2">$GOYCO</span>
-            </h3>
-            <p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mt-2">
-              ≈ 521.82 BTC_SATS
-            </p>
+          <div class="p-8 space-y-8 flex-1">
+            <!-- Main Balance -->
+            <div>
+              <span class="text-[9px] font-black text-zinc-600 uppercase tracking-widest block mb-2">Available_Liquidity</span>
+              <div class="flex items-baseline gap-3">
+                <h3 class="text-5xl font-black tracking-tighter text-white tabular-nums">
+                  1,242.42
+                </h3>
+                <span class="text-xl font-black text-green-500/80 tracking-tighter">$GOYCO</span>
+              </div>
+              <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">
+                ≈ 0.05218200 <span class="text-zinc-700">BTC</span>
+              </p>
+            </div>
+
+            <!-- Vested / Locked Assets -->
+            <div class="space-y-4 pt-4 border-t border-zinc-900">
+              <div class="flex justify-between items-end">
+                <div>
+                  <span class="text-[8px] font-black text-zinc-600 uppercase tracking-widest block mb-1">Vesting_Schedule</span>
+                  <span class="text-xs font-black text-white tabular-nums">4,500.00 <span class="text-zinc-500 text-[10px]">$GOYCO</span></span>
+                </div>
+                <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">72% Cleared</span>
+              </div>
+              <!-- Technical Progress Bar -->
+              <div class="h-1.5 w-full bg-zinc-900 flex gap-0.5 p-0.5 border border-zinc-800">
+                <div class="h-full bg-green-500/40 w-[72%]"></div>
+                <div class="h-full bg-zinc-800 w-[28%]"></div>
+              </div>
+            </div>
           </div>
 
-          <button class="w-full bg-zinc-800 text-white py-4 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-700 transition-colors">
-            Manage Assets
-          </button>
+          <!-- Wallet Actions -->
+          <footer class="p-2 border-t border-zinc-800 grid grid-cols-2 gap-2 bg-zinc-900/20">
+            <button class="bg-zinc-800 hover:bg-zinc-700 text-white py-3 text-[9px] font-black uppercase tracking-widest transition-all border border-zinc-700 active:translate-y-0.5 active:shadow-none">
+              [ Receive ]
+            </button>
+            <button class="bg-white hover:bg-zinc-200 text-zinc-950 py-3 text-[9px] font-black uppercase tracking-widest transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)] active:translate-y-0.5 active:shadow-none">
+              [ Transmit ]
+            </button>
+          </footer>
         </div>
 
         <div class="bg-zinc-950 border-2 border-zinc-800 p-8">
@@ -266,11 +308,15 @@
               <div class="text-zinc-700 italic animate-pulse mt-4">>>> MONITORING_INCOMING_TRANSMISSIONS...</div>
             {:else}
               {#each grid.logs as log (log.id)}
-                <div in:fly={{ x: -10, duration: 300 }} class="grid grid-cols-12 gap-2 group">
+                <button 
+                  onclick={() => selectedLog = log}
+                  in:fly={{ x: -10, duration: 300 }} 
+                  class="grid grid-cols-12 gap-2 group w-full text-left hover:bg-zinc-900/50 p-1 transition-colors"
+                >
                    <span class="col-span-3 text-zinc-700">[{log.time}]</span>
                    <span class="col-span-7 text-zinc-400 group-hover:text-zinc-200 transition-colors truncate">{log.action}</span>
                    <span class="col-span-2 text-right text-green-900/60">{log.status}</span>
-                </div>
+                </button>
               {/each}
             {/if}
           </div>
@@ -283,4 +329,12 @@
       </div>
     </aside>
   </div>
+
+  {#if selectedLog}
+    <LogDetailModal log={selectedLog} onClose={() => selectedLog = null} />
+  {/if}
+
+  {#if showEditModal}
+    <EditProfileModal onClose={() => showEditModal = false} />
+  {/if}
 </div>

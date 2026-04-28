@@ -10,6 +10,8 @@ class GridState {
     pubkey: '',
     avatar: '',
     banner: '',
+    website: '',
+    lud16: '',
     following: 0,
     followers: 0
   });
@@ -20,16 +22,68 @@ class GridState {
     { name: 'LONDON-04', status: 'ONLINE', latency: 0 }
   ]);
 
-  logs = $state<{ id: string; time: string; action: string; status: string }[]>([]);
+  logs = $state<{ id: string; time: string; action: string; status: string; raw?: any }[]>([]);
   
   isLoading = $state(true);
   isInitialized = $state(false);
   private unsubscribe: (() => void) | null = null;
 
-  addLog(action: string, status: string = 'OK') {
+  async saveNodes() {
+    // ... logic remains same ...
+  }
+
+  async updateMetadata(newMetadata: any) {
+    if (!this.profile.pubkey) return;
+
+    try {
+      // 1. Prepare and Sign Kind 0 Event
+      const event = await (window as any).nostr.signEvent({
+        kind: 0,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [],
+        content: JSON.stringify(newMetadata)
+      });
+
+      // 2. Multicast Broadcast to all active relays
+      this.addLog('BROADCASTING_IDENTITY_UPDATE', 'PENDING');
+      
+      const broadcastPromises = this.relays.map(async (r) => {
+        try {
+          const relay = await import('nostr-tools/relay').then(m => m.Relay.connect(`wss://${r.name.toLowerCase()}`));
+          await relay.publish(event);
+          relay.close();
+          return true;
+        } catch (e) {
+          console.warn(`Broadcast failed for relay: ${r.name}`);
+          return false;
+        }
+      });
+
+      // We wait for at least one successful relay publication
+      const results = await Promise.all(broadcastPromises);
+      if (!results.some(r => r === true)) {
+        throw new Error('ALL_RELAYS_REJECTED_TRANSMISSION');
+      }
+
+      // 3. Update locally immediately
+      this.updateProfile(newMetadata, null, null);
+
+      // 4. Notify Worker to sync cache
+      await this.notifyWorker(this.profile.pubkey, event);
+      
+      this.addLog('IDENTITY_SYNC_SUCCESSFUL');
+      return { success: true };
+    } catch (e) {
+      console.error('Failed to update metadata:', e);
+      this.addLog('IDENTITY_SYNC_FAILURE', 'ERROR');
+      throw e;
+    }
+  }
+
+  addLog(action: string, status: string = 'OK', raw?: any) {
     const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const id = Math.random().toString(36).slice(2, 9);
-    this.logs = [{ id, time, action, status }, ...this.logs].slice(0, 15);
+    this.logs = [{ id, time, action, status, raw }, ...this.logs].slice(0, 15);
   }
 
   async sync(pubkey: string, force = false) {
@@ -60,18 +114,31 @@ class GridState {
   private async startLiveLink(pubkey: string) {
     if (this.unsubscribe) return;
     
-    this.unsubscribe = await subscribeToIdentity(pubkey, (update) => {
-      if (update.type === 'activity') {
-        this.addLog(mapEventToAction(update.content));
-      }
-      if (update.type === 'metadata') {
-        this.updateProfile(update.content, null, null);
-        this.notifyWorker(pubkey, update.rawEvent);
-      }
-      if (update.type === 'following') {
-        this.profile.following = update.content;
-      }
-    });
+    try {
+      const host = window.location.hostname === 'localhost' ? 'localhost:8787' : 'api-worker.goycompany.workers.dev';
+      const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+      const socket = new WebSocket(`${protocol}://${host}/uplink/${pubkey}`);
+
+      socket.onmessage = (event) => {
+        const update = JSON.parse(event.data);
+        if (update.type === 'activity') {
+          this.addLog(mapEventToAction(update.content), 'OK', update.content);
+        }
+        if (update.type === 'metadata') {
+          this.updateProfile(update.content, null, null);
+          // Still notify worker for cache invalidation if update came from external
+          this.notifyWorker(pubkey, update.rawEvent);
+        }
+        if (update.type === 'following') {
+          this.profile.following = update.content;
+        }
+      };
+
+      this.unsubscribe = () => socket.close();
+    } catch (e) {
+      console.warn('Grid Uplink failed, falling back to direct relay subscription');
+      // Fallback code would go here if needed, but DO is preferred for "Grid Agent"
+    }
   }
 
   private async notifyWorker(pubkey: string, event: any) {

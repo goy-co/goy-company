@@ -139,6 +139,45 @@ export async function applyAsGhostOperator(event: any, details: { infrastructure
 }
 
 /**
+ * Uploads a file to the Grid Asset Storage (R2).
+ * Requires a signed event for authentication.
+ */
+export async function uploadAsset(file: File) {
+  if (typeof window === 'undefined' || !(window as any).nostr) {
+    throw new Error('NOSTR_EXTENSION_REQUIRED');
+  }
+
+  try {
+    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : API_GATEWAY;
+    
+    // 1. Sign Auth Event
+    const event = await (window as any).nostr.signEvent({
+      kind: 27235,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [['u', `${host}/upload`]],
+      content: `Upload file: ${file.name}`
+    });
+
+    // 2. Transmit multipart data
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('event', JSON.stringify(event));
+
+    const res = await fetch(`${host}/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) throw new Error('UPLOAD_REJECTED');
+    
+    return await res.json();
+  } catch (e) {
+    console.error('Upload Error:', e);
+    throw e;
+  }
+}
+
+/**
  * Subscribes to identity updates and user activity
  */
 export async function subscribeToIdentity(pubkey: string, callback: (data: any) => void, relays: string[] = DEFAULT_RELAYS) {

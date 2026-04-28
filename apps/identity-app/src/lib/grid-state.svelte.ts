@@ -11,9 +11,7 @@ class GridState {
     avatar: '',
     banner: '',
     website: '',
-    lud16: '',
-    following: 0,
-    followers: 0
+    lud16: ''
   });
 
   relays = $state([
@@ -113,6 +111,12 @@ class GridState {
 
   private async startLiveLink(pubkey: string) {
     if (this.unsubscribe) return;
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') this.finalSyncOnClose();
+      });
+    }
     
     try {
       const host = window.location.hostname === 'localhost' ? 'localhost:8787' : 'api-worker.goycompany.workers.dev';
@@ -125,12 +129,14 @@ class GridState {
           this.addLog(mapEventToAction(update.content), 'OK', update.content);
         }
         if (update.type === 'metadata') {
-          this.updateProfile(update.content, null, null);
-          // Still notify worker for cache invalidation if update came from external
-          this.notifyWorker(pubkey, update.rawEvent);
+          this.updateProfile(update.content);
         }
-        if (update.type === 'following') {
-          this.profile.following = update.content;
+        if (update.type === 'network_update') {
+          this.relays = Object.entries(update.relays).map(([url, info]: [string, any]) => ({
+            name: url.replace('wss://', '').toUpperCase(),
+            status: info.status,
+            latency: info.latency
+          }));
         }
       };
 
@@ -139,6 +145,21 @@ class GridState {
       console.warn('Grid Uplink failed, falling back to direct relay subscription');
       // Fallback code would go here if needed, but DO is preferred for "Grid Agent"
     }
+  }
+
+  private async finalSyncOnClose() {
+    if (!this.profile.pubkey) return;
+    try {
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
+      const url = `${host}/profile/${this.profile.pubkey}`;
+      const event = await (window as any).nostr.signEvent({
+        kind: 27235,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [['u', url]],
+        content: 'Final Sync Trigger'
+      });
+      fetch(url, { method: 'POST', body: JSON.stringify(event), keepalive: true });
+    } catch (e) {}
   }
 
   private async notifyWorker(pubkey: string, event: any) {
@@ -169,16 +190,16 @@ class GridState {
     }
   }
 
-  private updateProfile(metadata: any, following: number | null, followers: number | null) {
+  private updateProfile(metadata: any) {
     if (metadata) {
       this.profile.name = metadata.display_name || metadata.name || `Entity_${this.profile.pubkey.slice(0, 8)}`;
       this.profile.nip05 = metadata.nip05 || '';
       this.profile.bio = metadata.about || '';
       this.profile.avatar = metadata.picture || `https://api.dicebear.com/7.x/identicon/svg?seed=${this.profile.pubkey}`;
       this.profile.banner = metadata.banner || '';
+      this.profile.website = metadata.website || '';
+      this.profile.lud16 = metadata.lud16 || '';
     }
-    if (following !== null) this.profile.following = following;
-    if (followers !== null) this.profile.followers = followers;
   }
 
   private reset(pubkey: string) {

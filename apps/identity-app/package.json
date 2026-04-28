@@ -14,13 +14,14 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@goy/nostr": "workspace:*",
     "@astrojs/react": "^5.0.3",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@goy/nostr": "workspace:*",
     "@tailwindcss/vite": "^4.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.0.0",
+    "better-auth": "^1.6.9",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
     "react": "^19.2.5",

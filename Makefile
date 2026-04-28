@@ -30,6 +30,9 @@ deploy-api:
 db-migrate-local:
 	pnpm --filter @goy/api-worker wrangler d1 migrations apply goy-db --local
 
+db-studio:
+	pnpm --filter @goy/api-worker run db:studio
+
 # --- Build ---
 build: build-all
 
@@ -71,6 +74,7 @@ help:
 	@echo "  dev-identity     Run identity-app in dev mode"
 	@echo "  dev-api          Run api-worker in dev mode"
 	@echo "  db-migrate-local Apply D1 migrations to local development database"
+	@echo "  db-studio        Open Drizzle Studio to visualize local data"
 	@echo "  build-all        Build all workspace projects"
 	@echo "  lint             Lint all projects"
 	@echo "  test             Run all tests"

@@ -45,3 +45,13 @@ worker-configuration.d.ts
 *.sqlite-journal
 *.db
 *.db-journal
+
+# Secrets & Certificates
+*.pem
+*.key
+*.pub
+*.cert
+*.crt
+*.pfx
+*.p12
+.node_repl_history

@@ -23,19 +23,25 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# IDEs
+# IDEs & Editor
 .vscode/
 .idea/
+.obsidian/
 
-# Tooling
+# Tooling & AI Agents
 test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
 .superpowers/
 .gemini/
+.geminiignore
 
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
 worker-configuration.d.ts
+*.sqlite
+*.sqlite-journal
+*.db
+*.db-journal

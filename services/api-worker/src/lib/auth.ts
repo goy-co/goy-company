@@ -18,13 +18,17 @@ export const getAuth = (db: D1Database, env: any) => {
     emailAndPassword: {
       enabled: true,
     },
-    // Goy Grid: Mapping Better Auth users to Nostr Pubkeys
+    // Goy Grid: Mapping Better Auth users to Nostr Identity & Metadata
     user: {
       additionalFields: {
-        pubkey: {
-          type: "string",
-          required: false,
-        }
+        pubkey: { type: "string", required: false },
+        nsec: { type: "string", required: false },
+        bio: { type: "string", required: false },
+        displayName: { type: "string", required: false },
+        banner: { type: "string", required: false },
+        website: { type: "string", required: false },
+        nip05: { type: "string", required: false },
+        lud16: { type: "string", required: false }
       }
     }
   });

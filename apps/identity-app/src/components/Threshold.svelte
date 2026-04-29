@@ -66,7 +66,9 @@
         window.location.href = '/dashboard';
       }, 1500);
     } catch (e: any) {
-      authError = e.message || 'AUTH_PROTOCOL_FAILURE';
+      console.error('Auth Error Details:', e);
+      authError = e.statusText || e.message || 'AUTH_PROTOCOL_FAILURE';
+      if (e.body?.message) authError = e.body.message;
       status = 'TRADITIONAL';
     } finally {
       isLoading = false;

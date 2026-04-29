@@ -35,40 +35,33 @@ class GridState {
     if (!this.profile.pubkey) return;
 
     try {
-      // 1. Prepare and Sign Kind 0 Event
-      const event = await (window as any).nostr.signEvent({
-        kind: 0,
-        created_at: Math.floor(Date.now() / 1000),
-        tags: [],
-        content: JSON.stringify(newMetadata)
-      });
+      this.addLog('IDENTITY_SYNC_INITIATED', 'PENDING');
 
-      // 2. Multicast Broadcast to all active relays
-      this.addLog('BROADCASTING_IDENTITY_UPDATE', 'PENDING');
-      
-      const broadcastPromises = this.relays.map(async (r) => {
-        try {
-          const relay = await import('nostr-tools/relay').then(m => m.Relay.connect(`wss://${r.name.toLowerCase()}`));
-          await relay.publish(event);
-          relay.close();
-          return true;
-        } catch (e) {
-          console.warn(`Broadcast failed for relay: ${r.name}`);
-          return false;
+      if (this.sessionType === 'SOVEREIGN') {
+        // Path A: Sovereign (Sign locally via NIP-07/NSEC)
+        if (typeof window !== 'undefined' && (window as any).nostr) {
+          const event = await (window as any).nostr.signEvent({
+            kind: 0,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [],
+            content: JSON.stringify(newMetadata)
+          });
+          await this.notifyWorker(this.profile.pubkey, event);
+        } else {
+          throw new Error('NOSTR_EXTENSION_MISSING');
         }
-      });
-
-      // We wait for at least one successful relay publication
-      const results = await Promise.all(broadcastPromises);
-      if (!results.some(r => r === true)) {
-        throw new Error('ALL_RELAYS_REJECTED_TRANSMISSION');
+      } else {
+        // Path B: Traditional (Server-side signing via Managed NSEC)
+        const res: any = await this.notifyWorker(this.profile.pubkey, newMetadata);
+        // If the server provisioned or returned a real pubkey, update it
+        if (res?.pubkey && res.pubkey !== this.profile.pubkey) {
+           this.profile.pubkey = res.pubkey;
+           if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', res.pubkey);
+        }
       }
 
       // 3. Update locally immediately
-      this.updateProfile(newMetadata, null, null);
-
-      // 4. Notify Worker to sync cache
-      await this.notifyWorker(this.profile.pubkey, event);
+      this.updateProfile(newMetadata);
       
       this.addLog('IDENTITY_SYNC_SUCCESSFUL');
       return { success: true };
@@ -155,6 +148,10 @@ class GridState {
 
   private async finalSyncOnClose() {
     if (!this.profile.pubkey || typeof window === 'undefined') return;
+
+    // Only Sovereign users with extensions can sign a final sync event
+    if (this.sessionType !== 'SOVEREIGN' || !(window as any).nostr) return;
+
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
       const url = `${host}/profile/${this.profile.pubkey}`;
@@ -168,22 +165,29 @@ class GridState {
     } catch (e) {}
   }
 
-  private async notifyWorker(pubkey: string, event: any) {
+  private async notifyWorker(pubkey: string, payload: any) {
     if (typeof window === 'undefined') return;
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
-      await fetch(`${host}/profile/${pubkey}`, {
+      const res = await fetch(`${host}/profile/${pubkey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(event)
+        body: JSON.stringify(payload)
       });
+      if (res.ok) return await res.json();
     } catch (e) { /* silent */ }
   }
 
   private async refreshData(pubkey: string) {
     try {
       const data: any = await fetchFullIdentity(pubkey);
-      this.updateProfile(data.metadata, data.following, data.followers);
+      this.updateProfile(data.metadata);
+
+      // If this was a D1 user and the server has a real Nostr pubkey for them, update it
+      if (data.metadata?.pubkey && data.metadata.pubkey !== pubkey) {
+        this.profile.pubkey = data.metadata.pubkey;
+        if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', data.metadata.pubkey);
+      }
       
       if (data.network?.relays) {
         this.relays = Object.entries(data.network.relays).map(([url, info]: [string, any]) => ({
@@ -206,6 +210,8 @@ class GridState {
       this.profile.banner = metadata.banner || '';
       this.profile.website = metadata.website || '';
       this.profile.lud16 = metadata.lud16 || '';
+      // Ensure pubkey is kept if the metadata returns it
+      if (metadata.pubkey) this.profile.pubkey = metadata.pubkey;
     }
   }
 

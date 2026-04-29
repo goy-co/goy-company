@@ -40,6 +40,7 @@ export const user = sqliteTable("user", {
 	createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   pubkey: text("pubkey").unique(), 
+  nsec: text("nsec"), // SECURE: Encrypted at rest, never leaked to client
 });
 
 export const session = sqliteTable("session", {

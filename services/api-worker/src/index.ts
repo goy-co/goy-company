@@ -115,6 +115,54 @@ export interface Env {
 
 const DEFAULT_RELAYS = ['wss://relay.primal.net', 'wss://relay.damus.io', 'wss://nos.lol'];
 
+// --- CRYPTO SUITE (AES-GCM) ---
+async function encryptSecret(text: string, masterKey: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(masterKey));
+  const key = await crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM" }, false, ["encrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoder.encode(text));
+  const combined = new Uint8Array(iv.length + encrypted.byteLength);
+  combined.set(iv);
+  combined.set(new Uint8Array(encrypted), iv.length);
+  return btoa(String.fromCharCode(...combined));
+}
+
+async function decryptSecret(cipher: string, masterKey: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const combined = new Uint8Array(atob(cipher).split("").map(c => c.charCodeAt(0)));
+  const iv = combined.slice(0, 12);
+  const data = combined.slice(12);
+  const keyBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(masterKey));
+  const key = await crypto.subtle.importKey("raw", keyBuffer, { name: "AES-GCM" }, false, ["decrypt"]);
+  const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
+  return new TextDecoder().decode(decrypted);
+}
+
+// --- KEY PROVISIONING ---
+async function ensureNostrKeys(userId: string, env: Env): Promise<{ pubkey: string, nsec: string }> {
+  const db = drizzle(env.DB, { schema });
+  const user = await db.query.user.findFirst({ where: eq(schema.user.id, userId) });
+  
+  if (user?.pubkey && user?.nsec) {
+    const nsec = await decryptSecret(user.nsec, env.BETTER_AUTH_SECRET);
+    return { pubkey: user.pubkey, nsec };
+  }
+
+  // Generate New Identity
+  const skBytes = generateSecretKey();
+  const pk = getPublicKey(skBytes);
+  const toHex = (bytes: Uint8Array) => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  const sk = toHex(skBytes);
+  const encryptedSk = await encryptSecret(sk, env.BETTER_AUTH_SECRET);
+
+  await db.update(schema.user)
+    .set({ pubkey: pk, nsec: encryptedSk })
+    .where(eq(schema.user.id, userId));
+
+  return { pubkey: pk, nsec: sk };
+}
+
 async function aggregateIdentity(identifier: string, env: Env): Promise<any> {
   const db = drizzle(env.DB, { schema });
   
@@ -143,7 +191,8 @@ async function aggregateIdentity(identifier: string, env: Env): Promise<any> {
           nip05: d1User.nip05 || '',
           lud16: d1User.lud16 || '',
           pubkey: d1User.pubkey || d1User.id,
-          is_d1_user: true
+          is_d1_user: true,
+          has_nsec: !!d1User.nsec
         },
         fetched_at: Date.now()
       };
@@ -189,6 +238,12 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
 
     const auth = getAuth(env.DB, env);
+    const session = await auth.api.getSession({ headers: request.headers });
+    
+    // Auto-Provisioning for Traditional Users
+    if (session?.user) {
+       ctx.waitUntil(ensureNostrKeys(session.user.id, env));
+    }
 
     if (request.method === 'POST' && path === '/api/migrate-to-nostr') {
        try {
@@ -198,15 +253,13 @@ export default {
          if (!userId) return new Response(JSON.stringify({ error: 'UNAUTHORIZED' }), { status: 401, headers: CORS_HEADERS });
 
          const d1User = await db.query.user.findFirst({ where: eq(schema.user.id, userId) });
-         if (!d1User) return new Response(JSON.stringify({ error: 'USER_NOT_FOUND' }), { status: 404, headers: CORS_HEADERS });
+         if (!d1User || !d1User.nsec) return new Response(JSON.stringify({ error: 'USER_NOT_FOUND_OR_NOT_PROVISIONED' }), { status: 404, headers: CORS_HEADERS });
 
-         // 1. Generate Keypair
-         const skBytes = generateSecretKey();
-         const pk = getPublicKey(skBytes);
-         const toHex = (bytes: Uint8Array) => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-         const sk = toHex(skBytes);
+         // 1. Retrieve Provisioned Keys
+         const sk = await decryptSecret(d1User.nsec, env.BETTER_AUTH_SECRET);
+         const pk = d1User.pubkey!;
 
-         // 2. Build Nostr Metadata (Kind 0)
+         // 2. Build final Nostr Metadata (Kind 0) to ensure relays are updated
          const metadata = {
            name: d1User.name || '',
            display_name: d1User.displayName || d1User.name || 'ANONYMOUS',
@@ -218,6 +271,7 @@ export default {
            lud16: d1User.lud16 || ''
          };
 
+         const skBytes = new Uint8Array(sk.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
          const eventTemplate = {
            kind: 0,
            created_at: Math.floor(Date.now() / 1000),
@@ -226,7 +280,7 @@ export default {
          };
          const signedEvent = finalizeEvent(eventTemplate, skBytes);
 
-         // 3. Publish Identity to Default Relays
+         // 3. Multicast to Relays
          const publishPromises = DEFAULT_RELAYS.map(async (url) => {
            try {
              const relay = await Relay.connect(url);
@@ -236,12 +290,12 @@ export default {
          });
          await Promise.allSettled(publishPromises);
 
-         // 4. Purge Centralized Identity
+         // 4. Purge Centralized Identity (The Ritual)
          await db.delete(schema.session).where(eq(schema.session.userId, userId));
          await db.delete(schema.account).where(eq(schema.account.userId, userId));
          await db.delete(schema.user).where(eq(schema.user.id, userId));
 
-         // Clear cache so it fetches fresh from Nostr
+         // Clear cache
          await env.IDENTITY_CACHE.delete(`identity_agg:${pk}`);
 
          return new Response(JSON.stringify({ 
@@ -261,11 +315,57 @@ export default {
     }
 
     if (path.startsWith('/profile/')) {
-      const identifier = path.split('/')[2];
-      const identity = await aggregateIdentity(identifier, env);
-      return new Response(JSON.stringify(identity), { 
-        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } 
-      });
+      try {
+        const identifier = path.split('/')[2];
+
+        if (request.method === 'POST') {
+           const body = await request.json() as any;
+           
+           // A: Sovereign Path (Signed Event)
+           if (body.sig && body.pubkey) {
+              if (!verifyEvent(body)) return new Response("INVALID_SIG", { status: 400, headers: CORS_HEADERS });
+              await env.IDENTITY_CACHE.put(`identity_agg:${body.pubkey}`, JSON.stringify({ metadata: JSON.parse(body.content), fetched_at: Date.now() }), { expirationTtl: 3600 });
+              return new Response(JSON.stringify({ success: true }), { headers: CORS_HEADERS });
+           }
+
+           // B: Traditional Path (Raw JSON + Session)
+           if (!session?.user) return new Response("UNAUTHORIZED", { status: 401, headers: CORS_HEADERS });
+           const keys = await ensureNostrKeys(session.user.id, env);
+           
+           const skHex = keys.nsec.trim();
+           const skBytes = new Uint8Array(skHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+           
+           const eventTemplate = {
+             kind: 0,
+             created_at: Math.floor(Date.now() / 1000),
+             tags: [],
+             content: JSON.stringify(body)
+           };
+           const signedEvent = finalizeEvent(eventTemplate, skBytes);
+
+           // Broadcast to relays
+           ctx.waitUntil(Promise.all(DEFAULT_RELAYS.map(async (url) => {
+              try {
+                const relay = await Relay.connect(url);
+                await relay.publish(signedEvent);
+                relay.close();
+              } catch (e) {}
+           })));
+
+           // Immediate KV update for speed
+           await env.IDENTITY_CACHE.put(`identity_agg:${keys.pubkey}`, JSON.stringify({ metadata: body, fetched_at: Date.now() }), { expirationTtl: 3600 });
+           
+           return new Response(JSON.stringify({ success: true, pubkey: keys.pubkey }), { headers: CORS_HEADERS });
+        }
+
+        const identity = await aggregateIdentity(identifier, env);
+        return new Response(JSON.stringify(identity), { 
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' } 
+        });
+      } catch (e: any) {
+        console.error('PROFILE_ERROR:', e);
+        return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: CORS_HEADERS });
+      }
     }
 
     if (request.headers.get("Upgrade") === "websocket" && path.startsWith('/uplink/')) {

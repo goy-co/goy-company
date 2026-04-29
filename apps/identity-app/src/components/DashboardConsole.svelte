@@ -192,56 +192,143 @@
     <div class="flex-1 grid grid-cols-12 gap-4 min-h-0">
       
       <!-- Wallet Module -->
-      <section class="col-span-4 bg-zinc-950 border-2 border-zinc-800 flex flex-col min-h-0 relative">
-         <header class="p-3 border-b border-zinc-900 bg-zinc-900/30 flex justify-between items-center shrink-0">
-            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Liquid_Wealth</span>
-            <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+      <section class="col-span-4 bg-zinc-950 border-2 border-zinc-800 flex flex-col min-h-0 relative group">
+         <header class="p-2.5 border-b border-zinc-900 bg-zinc-900/30 flex justify-between items-center shrink-0 z-10">
+            <span class="text-[8px] font-black text-white uppercase tracking-widest">Liquid_Wealth</span>
+            <div class="flex gap-2 items-center">
+               <span class="text-[7px] font-bold text-green-500/80">+12.4% YTD</span>
+               <div class="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
+            </div>
          </header>
-         <div class="p-6 flex-1 flex flex-col justify-center min-h-0">
-            <span class="text-[7px] font-black text-zinc-700 uppercase block mb-1">Total_Balance</span>
-            <h3 class="text-3xl font-black tracking-tighter text-white tabular-nums">
-               1,242.42 <span class="text-sm text-green-500/80">$GOYCO</span>
-            </h3>
-            <p class="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-1">≈ 0.05218200 BTC</p>
-            
-            <div class="mt-6 flex gap-2">
-               <button class="flex-1 bg-zinc-100 text-zinc-950 py-2 text-[8px] font-black uppercase hover:bg-white transition-all">Send</button>
-               <button class="flex-1 border border-zinc-800 text-white py-2 text-[8px] font-black uppercase hover:border-zinc-700 transition-all">Receive</button>
+         
+         <div class="flex-1 flex flex-col relative min-h-0">
+            <!-- Ambient Background Chart -->
+            <div class="absolute top-0 left-0 right-0 h-32 overflow-hidden pointer-events-none opacity-20 group-hover:opacity-30 transition-opacity">
+               <svg class="w-full h-full" viewBox="0 0 200 60" preserveAspectRatio="none">
+                  <defs>
+                     <linearGradient id="wealthBgGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8" />
+                        <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                     </linearGradient>
+                  </defs>
+                  <path d="M0,60 L0,50 C20,48 40,55 60,40 C80,30 100,52 120,35 C140,20 160,30 180,15 L200,10 L200,60 Z" fill="url(#wealthBgGradient)" />
+                  <path d="M0,50 C20,48 40,55 60,40 C80,30 100,52 120,35 C140,20 160,30 180,15 L200,10" fill="none" stroke="#22c55e" stroke-width="0.5" />
+               </svg>
+            </div>
+
+            <!-- Content Overlay -->
+            <div class="relative z-10 p-3 flex-1 flex flex-col justify-end min-h-0">
+               <div class="flex justify-between items-end mb-2">
+                  <div>
+                     <span class="text-[7px] font-black text-zinc-600 uppercase block mb-0.5">Total_Equity</span>
+                     <h3 class="text-2xl font-black tracking-tighter text-white tabular-nums leading-none">
+                        1,242.42 <span class="text-[9px] text-green-500/60 tracking-normal ml-0.5">$GOYCO</span>
+                     </h3>
+                  </div>
+                  <div class="text-right">
+                     <span class="text-[8px] font-bold text-zinc-500 uppercase tabular-nums">≈ 0.052 BTC</span>
+                  </div>
+               </div>
+               
+               <div class="flex gap-2 mb-1">
+                  <button class="flex-1 bg-zinc-100 text-zinc-950 py-1.5 text-[7px] font-black uppercase hover:bg-white transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.05)]">Send</button>
+                  <button class="flex-1 border border-zinc-800 text-white py-1.5 text-[7px] font-black uppercase hover:border-zinc-700 transition-all">Receive</button>
+               </div>
             </div>
          </div>
       </section>
 
       <!-- Nodes Module -->
       <section class="col-span-4 bg-zinc-950 border-2 border-zinc-800 flex flex-col min-h-0">
-         <header class="p-3 border-b border-zinc-900 bg-zinc-900/30 shrink-0">
-            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Grid_Nodes</span>
+         <header class="p-2.5 border-b border-zinc-900 bg-zinc-900/30 shrink-0 flex justify-between items-center">
+            <span class="text-[8px] font-black text-white uppercase tracking-widest">Grid_Nodes</span>
+            {#if grid.sessionType === 'TRADITIONAL'}
+              <span class="text-[7px] font-black text-orange-500 uppercase">Passive_Mode</span>
+            {/if}
          </header>
-         <div class="p-4 flex-1 space-y-2 overflow-y-auto custom-scrollbar min-h-0">
-            {#each grid.relays.slice(0, 3) as relay}
-              <div class="flex items-center justify-between p-2 border border-zinc-900 bg-black/20">
-                <span class="text-[8px] font-black text-zinc-500 uppercase truncate mr-2">{relay.name}</span>
-                <span class="text-[9px] font-black text-green-500/80 tabular-nums">{relay.latency.toFixed(0)}ms</span>
+         
+         <div class="p-3 flex-1 flex flex-col min-h-0 justify-center">
+            {#if grid.sessionType === 'SOVEREIGN'}
+              <div class="space-y-1.5 overflow-hidden flex-1 flex flex-col justify-center">
+                {#each grid.relays.slice(0, 3) as relay}
+                  <div class="flex items-center justify-between p-1.5 border border-zinc-900 bg-black/20">
+                    <span class="text-[8px] font-black text-zinc-500 uppercase truncate mr-2">{relay.name}</span>
+                    <span class="text-[8px] font-black text-green-500/80 tabular-nums">{relay.latency.toFixed(0)}ms</span>
+                  </div>
+                {/each}
               </div>
-            {/each}
+            {:else}
+              <div class="flex-1 flex flex-col items-center justify-center text-center space-y-3">
+                 <div class="w-full space-y-2">
+                    <div class="h-0.5 w-full bg-zinc-900 overflow-hidden relative">
+                       <div class="absolute inset-0 bg-orange-500/40 animate-progress-fast"></div>
+                    </div>
+                    <span class="text-[8px] font-black text-zinc-500 uppercase tracking-widest block">Managed_Uplink</span>
+                 </div>
+                 <p class="text-[6px] text-zinc-600 uppercase font-bold leading-tight max-w-[150px]">
+                   Utilizing Goy Company infrastructure. Direct node control restricted.
+                 </p>
+              </div>
+            {/if}
          </div>
-         <footer class="p-2 bg-zinc-900/20 border-t border-zinc-900">
-            <button class="w-full text-[7px] font-black uppercase text-zinc-600 hover:text-white transition-colors tracking-widest">Infrastructure_Center -></button>
+         
+         <footer class="p-2 bg-zinc-900/20 border-t border-zinc-900 shrink-0 flex items-center justify-center">
+            {#if grid.sessionType === 'SOVEREIGN'}
+               <button class="w-full text-[7px] font-black uppercase text-zinc-500 hover:text-white transition-colors tracking-widest text-center leading-none">Nodes_Center -></button>
+            {:else}
+               <button onclick={() => showExportModal = true} class="w-full text-[7px] font-black uppercase text-zinc-600 hover:text-white transition-colors tracking-widest text-center underline leading-none">Upgrade_Sovereignty -></button>
+            {/if}
          </footer>
       </section>
 
-      <!-- Logs Module -->
-      <aside class="col-span-4 bg-black border-2 border-zinc-800 flex flex-col min-h-0 overflow-hidden">
-         <header class="p-3 border-b border-zinc-900 bg-zinc-900/40 shrink-0">
-            <span class="text-[8px] font-black text-white uppercase tracking-widest">System_Logs</span>
+      <!-- Governance Module -->
+      <aside class="col-span-4 bg-zinc-950 border-2 border-zinc-800 flex flex-col min-h-0 overflow-hidden relative">
+         <header class="p-2.5 border-b border-zinc-900 bg-zinc-900/30 shrink-0 flex justify-between items-center">
+            <span class="text-[8px] font-black text-white uppercase tracking-widest">Governance_Terminal</span>
+            <span class="text-[7px] font-black text-green-500 animate-pulse">LIVE</span>
          </header>
-         <div class="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar min-h-0">
-            {#each grid.logs.slice(0, 8) as log}
-              <div class="flex justify-between items-center p-2 border border-zinc-900 text-[8px] font-mono">
-                  <span class="text-zinc-500 uppercase truncate mr-2">{log.action}</span>
-                  <span class="text-zinc-800 tabular-nums shrink-0">{log.time}</span>
-              </div>
-            {/each}
+         
+         <div class="flex-1 p-3 space-y-2.5 min-h-0 flex flex-col justify-center">
+            <!-- Active Proposal 1 -->
+            <div class="space-y-1 group cursor-pointer">
+               <div class="flex justify-between items-start">
+                  <span class="text-[8px] font-black text-zinc-100 uppercase leading-none group-hover:text-green-500 transition-colors">GP-1617: Protocol</span>
+                  <span class="text-[7px] font-bold text-zinc-600 tabular-nums">24h</span>
+               </div>
+               <div class="h-1 w-full bg-zinc-900 overflow-hidden">
+                  <div class="h-full bg-green-500 w-[68%]"></div>
+               </div>
+               <div class="flex justify-between text-[6px] font-black uppercase tracking-tighter text-zinc-500">
+                  <span>Consensus: 68%</span>
+                  <span>Goal: 75%</span>
+               </div>
+            </div>
+
+            <!-- Active Proposal 2 -->
+            <div class="space-y-1 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+               <div class="flex justify-between items-start">
+                  <span class="text-[8px] font-black text-zinc-100 uppercase leading-none">GP-1618: Fees</span>
+                  <span class="text-[7px] font-bold text-zinc-600 tabular-nums">3d</span>
+               </div>
+               <div class="h-1 w-full bg-zinc-900 overflow-hidden">
+                  <div class="h-full bg-green-500 w-[42%]"></div>
+               </div>
+               <div class="flex justify-between text-[6px] font-black uppercase tracking-tighter text-zinc-500">
+                  <span>Consensus: 42%</span>
+                  <span>Goal: 75%</span>
+               </div>
+            </div>
+
+            <!-- Voting Power Block -->
+            <div class="p-1.5 bg-zinc-900/30 border border-zinc-800 flex justify-between items-center mt-1">
+               <span class="text-[7px] font-black text-zinc-600 uppercase">Power</span>
+               <span class="text-[9px] font-black text-white tabular-nums">42,069 <span class="text-[7px] text-zinc-600">$GOYCO</span></span>
+            </div>
          </div>
+
+         <footer class="p-2 bg-zinc-900/20 border-t border-zinc-900 shrink-0 flex items-center justify-center">
+            <button class="w-full text-[7px] font-black uppercase text-zinc-500 hover:text-white transition-colors tracking-widest text-center leading-none">Open_Vault -></button>
+         </footer>
       </aside>
     </div>
   </div>

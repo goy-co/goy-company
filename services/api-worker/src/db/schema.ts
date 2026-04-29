@@ -31,9 +31,14 @@ export const user = sqliteTable("user", {
 	email: text("email").notNull().unique(),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
 	image: text("image"),
+  bio: text("bio"),
+  displayName: text("display_name"),
+  banner: text("banner"),
+  website: text("website"),
+  nip05: text("nip05"),
+  lud16: text("lud16"),
 	createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-  // Goy Specific: Link to a Nostr pubkey (Sovereign Link)
   pubkey: text("pubkey").unique(), 
 });
 

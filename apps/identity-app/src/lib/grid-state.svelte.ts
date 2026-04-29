@@ -24,6 +24,7 @@ class GridState {
   
   isLoading = $state(true);
   isInitialized = $state(false);
+  sessionType = $state<'TRADITIONAL' | 'SOVEREIGN'>('SOVEREIGN');
   private unsubscribe: (() => void) | null = null;
 
   async saveNodes() {
@@ -101,6 +102,10 @@ class GridState {
     this.isLoading = true;
     this.profile.pubkey = pubkey;
     
+    if (typeof window !== 'undefined') {
+      this.sessionType = (sessionStorage.getItem('goy_session_type') as any) || 'SOVEREIGN';
+    }
+    
     await this.refreshData(pubkey);
     
     this.isLoading = false;
@@ -119,6 +124,7 @@ class GridState {
     }
     
     try {
+      if (typeof window === 'undefined') return;
       const host = window.location.hostname === 'localhost' ? 'localhost:8787' : 'api-worker.goycompany.workers.dev';
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       const socket = new WebSocket(`${protocol}://${host}/uplink/${pubkey}`);
@@ -148,7 +154,7 @@ class GridState {
   }
 
   private async finalSyncOnClose() {
-    if (!this.profile.pubkey) return;
+    if (!this.profile.pubkey || typeof window === 'undefined') return;
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
       const url = `${host}/profile/${this.profile.pubkey}`;
@@ -163,6 +169,7 @@ class GridState {
   }
 
   private async notifyWorker(pubkey: string, event: any) {
+    if (typeof window === 'undefined') return;
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
       await fetch(`${host}/profile/${pubkey}`, {

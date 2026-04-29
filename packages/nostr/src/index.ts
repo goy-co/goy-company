@@ -1,4 +1,4 @@
-import { generateSecretKey, getPublicKey } from 'nostr-tools';
+import { generateSecretKey, getPublicKey, nip19 } from 'nostr-tools';
 import { Relay } from 'nostr-tools/relay';
 
 export const PRIMAL_RELAY = 'wss://relay.primal.net';
@@ -20,6 +20,25 @@ export function generateIdentity() {
     privkey: toHex(privkey),
     pubkey
   };
+}
+
+export function getPublicKeyFromSecret(nsecOrHex: string): string {
+  try {
+    let sk: Uint8Array;
+    if (nsecOrHex.startsWith('nsec1')) {
+      const decoded = nip19.decode(nsecOrHex);
+      if (decoded.type !== 'nsec') throw new Error('INVALID_NSEC');
+      sk = decoded.data as Uint8Array;
+    } else {
+      // Assume hex
+      const cleanHex = nsecOrHex.trim();
+      if (!/^[0-9a-f]{64}$/i.test(cleanHex)) throw new Error('INVALID_HEX');
+      sk = new Uint8Array(cleanHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+    }
+    return getPublicKey(sk);
+  } catch (e) {
+    throw new Error('SEC_KEY_DECODE_FAILED');
+  }
 }
 
 export async function getPublicKeyFromExtension(): Promise<string> {

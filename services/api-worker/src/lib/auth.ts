@@ -9,6 +9,12 @@ export const getAuth = (db: D1Database, env: any) => {
       provider: "sqlite",
       schema: schema,
     }),
+    secret: env.BETTER_AUTH_SECRET,
+    baseURL: env.ENVIRONMENT === 'development' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev',
+    trustedOrigins: [
+      "http://localhost:4321",
+      "https://goy-identity.pages.dev"
+    ],
     emailAndPassword: {
       enabled: true,
     },

@@ -43,6 +43,7 @@
   ],
   "vars": {
     "ENVIRONMENT": "development",
-    "VERSION": "1.0.0"
+    "VERSION": "1.0.0",
+    "BETTER_AUTH_SECRET": "goy_company_secret_key_development_only"
   }
 }

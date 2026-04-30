@@ -13,6 +13,7 @@ export const getAuth = (db: D1Database, env: any) => {
     baseURL: env.ENVIRONMENT === 'development' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev',
     trustedOrigins: [
       "http://localhost:4321",
+      "http://localhost:4322",
       "https://goy-identity.pages.dev"
     ],
     emailAndPassword: {

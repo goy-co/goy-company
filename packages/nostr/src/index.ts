@@ -1,5 +1,6 @@
 import { generateSecretKey, getPublicKey, nip19 } from 'nostr-tools';
 import { Relay } from 'nostr-tools/relay';
+import { finalizeEvent } from 'nostr-tools/pure';
 
 export const PRIMAL_RELAY = 'wss://relay.primal.net';
 export const API_GATEWAY = 'https://api-worker.goycompany.workers.dev'; // Placeholder for production
@@ -7,18 +8,17 @@ export const API_GATEWAY = 'https://api-worker.goycompany.workers.dev'; // Place
 export const DEFAULT_RELAYS = [
   PRIMAL_RELAY,
   'wss://relay.damus.io',
-  'wss://nos.lol'
+  'wss://nos.lol',
+  'wss://relay.snort.social'
 ];
 
 export function generateIdentity() {
   const privkey = generateSecretKey();
   const pubkey = getPublicKey(privkey);
   
-  const toHex = (bytes: Uint8Array) => Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-
   return {
-    privkey: toHex(privkey),
-    pubkey
+    privkey: nip19.nsecEncode(privkey),
+    pubkey: nip19.npubEncode(pubkey)
   };
 }
 
@@ -54,8 +54,34 @@ export async function getPublicKeyFromExtension(): Promise<string> {
   }
 }
 
+export function toNpub(pubkey: string): string {
+  if (pubkey.startsWith('npub1')) return pubkey;
+  try {
+    return nip19.npubEncode(pubkey);
+  } catch (e) {
+    return pubkey;
+  }
+}
+
 export function hasNostrExtension(): boolean {
   return typeof window !== 'undefined' && !!(window as any).nostr;
+}
+
+export function signEventWithSecret(eventTemplate: any, nsecOrHex: string) {
+  try {
+    let sk: Uint8Array;
+    if (nsecOrHex.startsWith('nsec1')) {
+      const decoded = nip19.decode(nsecOrHex);
+      if (decoded.type !== 'nsec') throw new Error('INVALID_NSEC');
+      sk = decoded.data as Uint8Array;
+    } else {
+      const cleanHex = nsecOrHex.trim();
+      sk = new Uint8Array(cleanHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+    }
+    return finalizeEvent(eventTemplate, sk);
+  } catch (e) {
+    throw new Error('SIGNING_FAILED');
+  }
 }
 
 /**
@@ -82,11 +108,7 @@ export async function fetchFullIdentity(pubkey: string, options: { useGateway?: 
   if (useGateway && typeof window !== 'undefined') {
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : gatewayUrl;
-      const url = host.includes('?') ? `${host}&profile=${pubkey}` : `${host}/profile/${pubkey}`;
-      // Fix URL building for gateway with existing params
-      const finalUrl = host.includes('?') 
-        ? `${host.split('?')[0]}/profile/${pubkey}?${host.split('?')[1]}`
-        : `${host}/profile/${pubkey}`;
+      const finalUrl = `${host}/profile/${pubkey}`;
 
       const res = await fetch(finalUrl, { signal: AbortSignal.timeout(4000) });
       if (res.ok) {
@@ -110,13 +132,19 @@ export async function fetchFullIdentity(pubkey: string, options: { useGateway?: 
 
     return new Promise((resolve) => {
       const results: any = { metadata: null, following: 0 };
-      const cleanup = () => {
+      
+      const cleanup = async () => {
         if (isFinished) return;
         isFinished = true;
-        try { if (relay && relay.connected) relay.close(); } catch (e) {}
+        try {
+          if (relay) {
+            await relay.close();
+          }
+        } catch (e) {}
         resolve(results);
       };
-      const timeout = setTimeout(cleanup, 2500);
+
+      const timeout = setTimeout(cleanup, 3000);
 
       Relay.connect(url).then((connectedRelay) => {
         relay = connectedRelay;
@@ -125,9 +153,12 @@ export async function fetchFullIdentity(pubkey: string, options: { useGateway?: 
             if (event.kind === 0) { try { results.metadata = JSON.parse(event.content); } catch {} }
             if (event.kind === 3) { results.following = event.tags.filter((t: any) => t[0] === 'p').length; }
           },
-          ononeose() { sub.close(); cleanup(); }
+          ononeose() {
+            try { sub.close(); } catch {}
+            cleanup();
+          }
         });
-      }).catch(cleanup);
+      }).catch(() => cleanup());
     });
   };
 

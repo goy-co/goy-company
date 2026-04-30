@@ -1,4 +1,4 @@
-import { fetchFullIdentity, subscribeToIdentity, mapEventToAction } from '@goy/nostr';
+import { fetchFullIdentity, subscribeToIdentity, mapEventToAction, signEventWithSecret } from '@goy/nostr';
 
 // Global Singleton State using Svelte 5 Runes
 // This instance will persist across Astro View Transitions
@@ -28,7 +28,7 @@ class GridState {
   private unsubscribe: (() => void) | null = null;
 
   async saveNodes() {
-    // ... logic remains same ...
+    // Logic for nodes placeholder
   }
 
   async updateMetadata(newMetadata: any) {
@@ -38,18 +38,31 @@ class GridState {
       this.addLog('IDENTITY_SYNC_INITIATED', 'PENDING');
 
       if (this.sessionType === 'SOVEREIGN') {
-        // Path A: Sovereign (Sign locally via NIP-07/NSEC)
+        // Path A: Sovereign
+        let event;
         if (typeof window !== 'undefined' && (window as any).nostr) {
-          const event = await (window as any).nostr.signEvent({
+          // A1: Via Extension (NIP-07)
+          event = await (window as any).nostr.signEvent({
             kind: 0,
             created_at: Math.floor(Date.now() / 1000),
             tags: [],
             content: JSON.stringify(newMetadata)
           });
-          await this.notifyWorker(this.profile.pubkey, event);
         } else {
-          throw new Error('NOSTR_EXTENSION_MISSING');
+          // A2: Via Stored Secret (In-memory/session)
+          const storedPrivkey = typeof window !== 'undefined' ? sessionStorage.getItem('goy_privkey') : null;
+          if (!storedPrivkey) throw new Error('NOSTR_EXTENSION_MISSING');
+          
+          const eventTemplate = {
+            kind: 0,
+            created_at: Math.floor(Date.now() / 1000),
+            tags: [],
+            content: JSON.stringify(newMetadata)
+          };
+          event = signEventWithSecret(eventTemplate, storedPrivkey);
         }
+        
+        await this.notifyWorker(this.profile.pubkey, event);
       } else {
         // Path B: Traditional (Server-side signing via Managed NSEC)
         const res: any = await this.notifyWorker(this.profile.pubkey, newMetadata);
@@ -79,15 +92,12 @@ class GridState {
   }
 
   async sync(pubkey: string, force = false) {
-    // CRITICAL: If we are already initialized in memory, DO NOT set isLoading to true
-    // This is what prevents the flicker between routes
     if (this.isInitialized && !force) {
-      // Just refresh in background if pubkey matches, otherwise reset
       if (this.profile.pubkey !== pubkey) {
         this.reset(pubkey);
         await this.refreshData(pubkey);
       } else {
-        this.refreshData(pubkey); // Silent background refresh
+        this.refreshData(pubkey);
       }
       return;
     }
@@ -108,7 +118,10 @@ class GridState {
   }
 
   private async startLiveLink(pubkey: string) {
-    if (this.unsubscribe) return;
+    if (this.unsubscribe) {
+       this.unsubscribe();
+       this.unsubscribe = null;
+    }
 
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', () => {
@@ -123,6 +136,7 @@ class GridState {
       const socket = new WebSocket(`${protocol}://${host}/uplink/${pubkey}`);
 
       socket.onmessage = (event) => {
+        if (socket.readyState !== WebSocket.OPEN) return;
         const update = JSON.parse(event.data);
         if (update.type === 'activity') {
           this.addLog(mapEventToAction(update.content), 'OK', update.content);
@@ -139,17 +153,18 @@ class GridState {
         }
       };
 
-      this.unsubscribe = () => socket.close();
+      this.unsubscribe = () => {
+        if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+          socket.close();
+        }
+      };
     } catch (e) {
-      console.warn('Grid Uplink failed, falling back to direct relay subscription');
-      // Fallback code would go here if needed, but DO is preferred for "Grid Agent"
+      console.warn('Grid Uplink failed');
     }
   }
 
   private async finalSyncOnClose() {
     if (!this.profile.pubkey || typeof window === 'undefined') return;
-
-    // Only Sovereign users with extensions can sign a final sync event
     if (this.sessionType !== 'SOVEREIGN' || !(window as any).nostr) return;
 
     try {
@@ -172,10 +187,11 @@ class GridState {
       const res = await fetch(`${host}/profile/${pubkey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        credentials: 'include'
       });
       if (res.ok) return await res.json();
-    } catch (e) { /* silent */ }
+    } catch (e) {}
   }
 
   private async refreshData(pubkey: string) {
@@ -183,7 +199,6 @@ class GridState {
       const data: any = await fetchFullIdentity(pubkey);
       this.updateProfile(data.metadata);
 
-      // If this was a D1 user and the server has a real Nostr pubkey for them, update it
       if (data.metadata?.pubkey && data.metadata.pubkey !== pubkey) {
         this.profile.pubkey = data.metadata.pubkey;
         if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', data.metadata.pubkey);
@@ -210,7 +225,6 @@ class GridState {
       this.profile.banner = metadata.banner || '';
       this.profile.website = metadata.website || '';
       this.profile.lud16 = metadata.lud16 || '';
-      // Ensure pubkey is kept if the metadata returns it
       if (metadata.pubkey) this.profile.pubkey = metadata.pubkey;
     }
   }
@@ -231,5 +245,4 @@ class GridState {
   }
 }
 
-// The instance 'grid' stays alive between page navigations thanks to View Transitions
 export const grid = new GridState();

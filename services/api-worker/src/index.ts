@@ -1,5 +1,5 @@
 import { getAuth } from './lib/auth';
-import { CORS_HEADERS } from './lib/constants';
+import { CORS_HEADERS_BASE } from './lib/constants';
 import { Env } from './lib/types';
 import { ensureNostrKeys } from './lib/keys';
 import { handleMigration } from './handlers/migration';
@@ -8,13 +8,32 @@ import { handleProfile } from './handlers/profile';
 // Export Durable Objects for Cloudflare
 export { NostrAgent } from "./agents/NostrAgent";
 
+/**
+ * Dynamic CORS helper to support multiple origins (dev/prod)
+ */
+export function getCorsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get('Origin');
+  const headers: Record<string, string> = { ...CORS_HEADERS_BASE };
+  
+  if (origin) {
+    const isLocalhost = origin.includes('localhost:');
+    const isOfficial = origin === 'https://goycompany.com' || origin === 'https://identity.goycompany.com' || origin.endsWith('.goycompany.workers.dev');
+    
+    if (isLocalhost || isOfficial) {
+      headers['Access-Control-Allow-Origin'] = origin;
+    }
+  }
+  return headers;
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
+    const corsHeaders = getCorsHeaders(request);
 
     // 1. Global CORS Preflight
-    if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+    if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
     const auth = getAuth(env.DB, env);
     const session = await auth.api.getSession({ headers: request.headers });
@@ -35,7 +54,7 @@ export default {
     if (path.startsWith("/api/auth")) {
        const res = await auth.handler(request);
        const newRes = new Response(res.body, res);
-       Object.entries(CORS_HEADERS).forEach(([k, v]) => newRes.headers.set(k, v));
+       Object.entries(corsHeaders).forEach(([k, v]) => newRes.headers.set(k, v));
        return newRes;
     }
 
@@ -52,6 +71,6 @@ export default {
     }
 
     // Default Fallback
-    return new Response(JSON.stringify({ error: 'NOT_FOUND' }), { status: 404, headers: CORS_HEADERS });
+    return new Response(JSON.stringify({ error: 'NOT_FOUND' }), { status: 404, headers: corsHeaders });
   },
 };

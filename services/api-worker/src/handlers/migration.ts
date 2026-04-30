@@ -2,20 +2,23 @@ import { drizzle } from 'drizzle-orm/d1';
 import { eq } from 'drizzle-orm';
 import { Relay } from 'nostr-tools/relay';
 import { finalizeEvent } from 'nostr-tools/pure';
+import { nip19 } from 'nostr-tools';
 import * as schema from '../db/schema';
 import { decryptSecret } from '../lib/crypto';
-import { CORS_HEADERS, DEFAULT_RELAYS } from '../lib/constants';
+import { DEFAULT_RELAYS } from '../lib/constants';
 import { Env } from '../lib/types';
+import { getCorsHeaders } from '../index';
 
 export async function handleMigration(request: Request, env: Env): Promise<Response> {
+  const corsHeaders = getCorsHeaders(request);
   try {
     const db = drizzle(env.DB, { schema });
     const body = await request.json() as any;
     const userId = body.userId;
-    if (!userId) return new Response(JSON.stringify({ error: 'UNAUTHORIZED' }), { status: 401, headers: CORS_HEADERS });
+    if (!userId) return new Response(JSON.stringify({ error: 'UNAUTHORIZED' }), { status: 401, headers: corsHeaders });
 
     const d1User = await db.query.user.findFirst({ where: eq(schema.user.id, userId) });
-    if (!d1User || !d1User.nsec) return new Response(JSON.stringify({ error: 'USER_NOT_FOUND_OR_NOT_PROVISIONED' }), { status: 404, headers: CORS_HEADERS });
+    if (!d1User || !d1User.nsec) return new Response(JSON.stringify({ error: 'USER_NOT_FOUND_OR_NOT_PROVISIONED' }), { status: 404, headers: corsHeaders });
 
     // 1. Retrieve Provisioned Keys
     const sk = await decryptSecret(d1User.nsec, env.BETTER_AUTH_SECRET);
@@ -62,9 +65,12 @@ export async function handleMigration(request: Request, env: Env): Promise<Respo
 
     return new Response(JSON.stringify({ 
       success: true, 
-      keys: { privkey: sk, pubkey: pk } 
-    }), { headers: CORS_HEADERS });
+      keys: { 
+        privkey: nip19.nsecEncode(skBytes), 
+        pubkey: nip19.npubEncode(pk) 
+      } 
+    }), { headers: corsHeaders });
   } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: CORS_HEADERS });
+    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
   }
 }

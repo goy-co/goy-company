@@ -1,4 +1,4 @@
-# The Goy Company // Documentation Matrix
+# The Goy Company
 
 Welcome to the central repository of truth for **The Goy Company**. This monorepo represents a fusion of brutalist aesthetics, luxury corporate posture, and radical technological sovereignty.
 

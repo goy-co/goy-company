@@ -59,10 +59,10 @@ async function revalidateIdentity(pubkey: string, cachedData: any, env: Env) {
   if (hasChanged) {
      console.log(`[IDENTITY_REVALIDATE] Update detected for ${pubkey}. Refreshing KV and notifying Agent.`);
      
-     // 1. Update KV
-     await env.IDENTITY_CACHE.put(`identity_agg:${pubkey}`, JSON.stringify(freshData), { expirationTtl: 3600 });
+     // Robust Anchor (Updates D1 and KV)
+     await anchorIdentity(pubkey, freshData.metadata, env);
 
-     // 2. Notify Grid Agent so the UI updates via WebSocket
+     // Notify Grid Agent so the UI updates via WebSocket
      await env.NOSTR_AGENT.get(env.NOSTR_AGENT.idFromName(pubkey)).fetch(new Request(`http://uplink/uplink/${pubkey}`, {
         method: 'POST',
         body: JSON.stringify({ type: 'metadata', content: freshData.metadata })
@@ -144,4 +144,72 @@ async function fetchFromSource(hexPubkey: string, env: Env): Promise<any> {
     fetched_at: Date.now(),
     is_fallback: true
   };
+}
+
+/**
+ * Anchors identity in D1 and KV Cache. 
+ * Shared between handleProfile and NostrAgent.
+ */
+export async function anchorIdentity(pk: string, metadata: any, env: Env) {
+  const db = drizzle(env.DB, { schema });
+  const hexPk = pk.toLowerCase();
+
+  // 1. Clean metadata mapping
+  const mappedData = {
+    name: metadata.name || metadata.display_name || `entity_${hexPk.slice(0, 8)}`,
+    displayName: metadata.display_name || metadata.name || `ENTITY_${hexPk.slice(0, 8)}`,
+    bio: metadata.about || metadata.bio || '',
+    image: metadata.picture || metadata.image || `https://api.dicebear.com/7.x/identicon/svg?seed=${hexPk}`,
+    banner: metadata.banner || '',
+    website: metadata.website || '',
+    nip05: metadata.nip05 || '',
+    lud16: metadata.lud16 || ''
+  };
+
+  // 2. Anchor in D1
+  try {
+    await db.insert(schema.user).values({
+      id: hexPk,
+      pubkey: hexPk,
+      name: mappedData.name,
+      displayName: mappedData.displayName,
+      bio: mappedData.bio,
+      image: mappedData.image,
+      banner: mappedData.banner,
+      website: mappedData.website,
+      nip05: mappedData.nip05,
+      lud16: mappedData.lud16,
+      email: null,
+      emailVerified: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }).onConflictDoUpdate({
+      target: schema.user.pubkey,
+      set: {
+        name: mappedData.name,
+        displayName: mappedData.displayName,
+        bio: mappedData.bio,
+        image: mappedData.image,
+        banner: mappedData.banner,
+        website: mappedData.website,
+        nip05: mappedData.nip05,
+        lud16: mappedData.lud16,
+        updatedAt: new Date()
+      }
+    });
+  } catch (e) { console.error('D1_ANCHOR_ERROR:', e); }
+
+  // 3. Update KV Cache
+  const kvPayload = {
+    metadata: { 
+       ...metadata, 
+       pubkey: hexPk,
+       display_name: mappedData.displayName,
+       picture: mappedData.image 
+    },
+    fetched_at: Date.now()
+  };
+  await env.IDENTITY_CACHE.put(`identity_agg:${hexPk}`, JSON.stringify(kvPayload), { expirationTtl: 3600 });
+  
+  return kvPayload;
 }

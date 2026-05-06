@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
+  import { toNpub } from '@goy/nostr';
   import LogDetailModal from './ui/LogDetailModal.svelte';
   import EditProfileModal from './ui/EditProfileModal.svelte';
 
@@ -45,12 +46,13 @@
   });
 
   function copyPubKey() {
-    navigator.clipboard.writeText(grid.profile.pubkey);
+    const npub = toNpub(grid.profile.pubkey);
+    navigator.clipboard.writeText(npub);
     showToast('PUBLIC_KEY_COPIED_TO_GRID');
   }
 
   function handleLogout() {
-    sessionStorage.removeItem('goy_pubkey');
+    sessionStorage.clear();
     grid.cleanup();
     window.location.href = '/';
   }

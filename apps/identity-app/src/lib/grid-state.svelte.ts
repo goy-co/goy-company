@@ -5,6 +5,7 @@ import { fetchFullIdentity, subscribeToIdentity, mapEventToAction, signEventWith
 class GridState {
   profile = $state({
     name: '',
+    display_name: '',
     nip05: '',
     bio: '',
     pubkey: '',
@@ -218,7 +219,8 @@ class GridState {
 
   private updateProfile(metadata: any) {
     if (metadata) {
-      this.profile.name = metadata.display_name || metadata.name || `Entity_${this.profile.pubkey.slice(0, 8)}`;
+      this.profile.display_name = metadata.display_name || metadata.name || `ENTITY_${this.profile.pubkey.slice(0, 8)}`;
+      this.profile.name = metadata.name || metadata.display_name || `entity_${this.profile.pubkey.slice(0, 8)}`;
       this.profile.nip05 = metadata.nip05 || '';
       this.profile.bio = metadata.about || '';
       this.profile.avatar = metadata.picture || `https://api.dicebear.com/7.x/identicon/svg?seed=${this.profile.pubkey}`;

@@ -28,8 +28,8 @@ export const ghostOperators = sqliteTable('ghost_operators', {
 export const user = sqliteTable("user", {
 	id: text("id").primaryKey(),
 	name: text("name").notNull(),
-	email: text("email").notNull().unique(),
-	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
+	email: text("email").unique(), // Optional for Sovereign users
+	emailVerified: integer("email_verified", { mode: "boolean" }), // Optional for Sovereign users
 	image: text("image"),
   bio: text("bio"),
   displayName: text("display_name"),

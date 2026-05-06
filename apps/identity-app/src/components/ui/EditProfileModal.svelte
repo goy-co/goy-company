@@ -15,7 +15,7 @@
   // Form State
   let form = $state({
     name: grid.profile.name,
-    display_name: grid.profile.name,
+    display_name: grid.profile.display_name,
     nip05: grid.profile.nip05,
     about: grid.profile.bio,
     picture: grid.profile.avatar,

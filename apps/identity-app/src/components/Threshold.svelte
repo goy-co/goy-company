@@ -85,7 +85,9 @@
       status = 'SYNCING';
       showImport = false;
       
+      sessionStorage.clear(); // PURGE PREVIOUS SESSION
       sessionStorage.setItem('goy_pubkey', pubkey);
+      sessionStorage.setItem('goy_privkey', nsecInput.trim());
       sessionStorage.setItem('goy_session_type', 'SOVEREIGN');
       setTimeout(() => window.location.href = '/dashboard', 1500);
     } catch (e: any) {

@@ -159,10 +159,10 @@
               </p>
               
               <div class="flex gap-4 pt-2">
-                 {#if grid.sessionType === 'SOVEREIGN'}
-                   <button onclick={copyPubKey} class="bg-zinc-100 text-zinc-950 px-6 py-2 text-[10px] font-black uppercase hover:bg-white transition-all shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)]">Copy_Key</button>
-                 {:else}
+                 {#if grid.sessionType === 'TRADITIONAL'}
                    <button onclick={() => showExportModal = true} class="bg-zinc-100 text-zinc-950 px-6 py-2 text-[10px] font-black uppercase hover:bg-white transition-all shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)]">Export_to_Nostr</button>
+                 {:else}
+                   <button onclick={copyPubKey} class="bg-zinc-100 text-zinc-950 px-6 py-2 text-[10px] font-black uppercase hover:bg-white transition-all shadow-[6px_6px_0px_0px_rgba(255,255,255,0.1)]">Copy_Key</button>
                  {/if}
                  <button onclick={() => showEditModal = true} class="border-2 border-zinc-700 text-white px-6 py-2 text-[10px] font-black uppercase hover:border-white transition-all">Edit_Profile</button>
               </div>
@@ -250,7 +250,7 @@
          </header>
          
          <div class="p-3 flex-1 flex flex-col min-h-0 justify-center">
-            {#if grid.sessionType === 'SOVEREIGN'}
+            {#if grid.sessionType !== 'TRADITIONAL'}
               <div class="space-y-1.5 overflow-hidden flex-1 flex flex-col justify-center">
                 {#each grid.relays.slice(0, 3) as relay}
                   <div class="flex items-center justify-between p-1.5 border border-zinc-900 bg-black/20">
@@ -275,7 +275,7 @@
          </div>
          
          <footer class="p-2 bg-zinc-900/20 border-t border-zinc-900 shrink-0 flex items-center justify-center">
-            {#if grid.sessionType === 'SOVEREIGN'}
+            {#if grid.sessionType !== 'TRADITIONAL'}
                <button class="w-full text-[7px] font-black uppercase text-zinc-500 hover:text-white transition-colors tracking-widest text-center leading-none">Nodes_Center -></button>
             {:else}
                <button onclick={() => showExportModal = true} class="w-full text-[7px] font-black uppercase text-zinc-600 hover:text-white transition-colors tracking-widest text-center underline leading-none">Upgrade_Sovereignty -></button>

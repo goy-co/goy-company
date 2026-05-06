@@ -25,7 +25,7 @@ class GridState {
   
   isLoading = $state(true);
   isInitialized = $state(false);
-  sessionType = $state<'TRADITIONAL' | 'SOVEREIGN'>('SOVEREIGN');
+  sessionType = $state<'TRADITIONAL' | 'SOVEREIGN_NSEC' | 'SOVEREIGN_EXT'>('SOVEREIGN_NSEC');
   private unsubscribe: (() => void) | null = null;
 
   async saveNodes() {
@@ -33,41 +33,44 @@ class GridState {
   }
 
   async updateMetadata(newMetadata: any) {
-    if (!this.profile.pubkey) return;
+    if (!this.profile.pubkey) {
+      // Emergency: Try to recover from session storage if state is lost
+      const stored = typeof window !== 'undefined' ? sessionStorage.getItem('goy_pubkey') : null;
+      if (stored) this.profile.pubkey = stored;
+      else throw new Error('NO_ACTIVE_PUBKEY_IN_STATE');
+    }
 
     try {
       this.addLog('IDENTITY_SYNC_INITIATED', 'PENDING');
 
-      if (this.sessionType === 'SOVEREIGN') {
-        // Path A: Sovereign
-        let event;
-        if (typeof window !== 'undefined' && (window as any).nostr) {
-          // A1: Via Extension (NIP-07)
-          event = await (window as any).nostr.signEvent({
-            kind: 0,
-            created_at: Math.floor(Date.now() / 1000),
-            tags: [],
-            content: JSON.stringify(newMetadata)
-          });
-        } else {
-          // A2: Via Stored Secret (In-memory/session)
-          const storedPrivkey = typeof window !== 'undefined' ? sessionStorage.getItem('goy_privkey') : null;
-          if (!storedPrivkey) throw new Error('NOSTR_EXTENSION_MISSING');
-          
-          const eventTemplate = {
-            kind: 0,
-            created_at: Math.floor(Date.now() / 1000),
-            tags: [],
-            content: JSON.stringify(newMetadata)
-          };
-          event = signEventWithSecret(eventTemplate, storedPrivkey);
-        }
-        
+      if (this.sessionType === 'SOVEREIGN_EXT') {
+        // Path A1: Via Extension (NIP-07)
+        if (typeof window === 'undefined' || !(window as any).nostr) throw new Error('NOSTR_EXTENSION_MISSING');
+        const event = await (window as any).nostr.signEvent({
+          kind: 0,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: [],
+          content: JSON.stringify(newMetadata)
+        });
         await this.notifyWorker(this.profile.pubkey, event);
-      } else {
+      } 
+      else if (this.sessionType === 'SOVEREIGN_NSEC') {
+        // Path A2: Via Stored Secret (Manual Key)
+        const storedPrivkey = typeof window !== 'undefined' ? sessionStorage.getItem('goy_privkey') : null;
+        if (!storedPrivkey) throw new Error('SEC_KEY_NOT_FOUND_IN_SESSION');
+        
+        const eventTemplate = {
+          kind: 0,
+          created_at: Math.floor(Date.now() / 1000),
+          tags: [],
+          content: JSON.stringify(newMetadata)
+        };
+        const event = signEventWithSecret(eventTemplate, storedPrivkey);
+        await this.notifyWorker(this.profile.pubkey, event);
+      }
+      else {
         // Path B: Traditional (Server-side signing via Managed NSEC)
         const res: any = await this.notifyWorker(this.profile.pubkey, newMetadata);
-        // If the server provisioned or returned a real pubkey, update it
         if (res?.pubkey && res.pubkey !== this.profile.pubkey) {
            this.profile.pubkey = res.pubkey;
            if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', res.pubkey);
@@ -93,29 +96,31 @@ class GridState {
   }
 
   async sync(pubkey: string, force = false) {
+    const cleanPubkey = pubkey.toLowerCase();
+
+    // If already initialized with a different pubkey, we MUST reset
+    if (this.isInitialized && this.profile.pubkey.toLowerCase() !== cleanPubkey) {
+      this.reset(cleanPubkey);
+    }
+
     if (this.isInitialized && !force) {
-      if (this.profile.pubkey !== pubkey) {
-        this.reset(pubkey);
-        await this.refreshData(pubkey);
-      } else {
-        this.refreshData(pubkey);
-      }
+      await this.refreshData(cleanPubkey);
       return;
     }
 
     this.isLoading = true;
-    this.profile.pubkey = pubkey;
+    this.profile.pubkey = cleanPubkey;
     
     if (typeof window !== 'undefined') {
-      this.sessionType = (sessionStorage.getItem('goy_session_type') as any) || 'SOVEREIGN';
+      this.sessionType = (sessionStorage.getItem('goy_session_type') as any) || 'SOVEREIGN_NSEC';
     }
     
-    await this.refreshData(pubkey);
+    await this.refreshData(cleanPubkey);
     
     this.isLoading = false;
     this.isInitialized = true;
     
-    this.startLiveLink(pubkey);
+    this.startLiveLink(cleanPubkey);
   }
 
   private async startLiveLink(pubkey: string) {
@@ -166,7 +171,7 @@ class GridState {
 
   private async finalSyncOnClose() {
     if (!this.profile.pubkey || typeof window === 'undefined') return;
-    if (this.sessionType !== 'SOVEREIGN' || !(window as any).nostr) return;
+    if (this.sessionType !== 'SOVEREIGN_EXT' || !(window as any).nostr) return;
 
     try {
       const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
@@ -200,9 +205,9 @@ class GridState {
       const data: any = await fetchFullIdentity(pubkey);
       this.updateProfile(data.metadata);
 
-      if (data.metadata?.pubkey && data.metadata.pubkey !== pubkey) {
-        this.profile.pubkey = data.metadata.pubkey;
-        if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', data.metadata.pubkey);
+      if (data.metadata?.pubkey && data.metadata.pubkey.toLowerCase() !== pubkey.toLowerCase()) {
+        this.profile.pubkey = data.metadata.pubkey.toLowerCase();
+        if (typeof window !== 'undefined') sessionStorage.setItem('goy_pubkey', this.profile.pubkey);
       }
       
       if (data.network?.relays) {
@@ -227,16 +232,30 @@ class GridState {
       this.profile.banner = metadata.banner || '';
       this.profile.website = metadata.website || '';
       this.profile.lud16 = metadata.lud16 || '';
-      if (metadata.pubkey) this.profile.pubkey = metadata.pubkey;
+      if (metadata.pubkey) this.profile.pubkey = metadata.pubkey.toLowerCase();
     }
   }
 
   private reset(pubkey: string) {
     this.isInitialized = false;
     this.cleanup();
-    this.profile.pubkey = pubkey;
+    
+    // Total Wipe
+    this.profile.pubkey = pubkey.toLowerCase();
     this.profile.name = '';
+    this.profile.display_name = '';
+    this.profile.nip05 = '';
+    this.profile.bio = '';
     this.profile.avatar = '';
+    this.profile.banner = '';
+    this.profile.website = '';
+    this.profile.lud16 = '';
+    
+    this.logs = [];
+    
+    if (typeof window !== 'undefined') {
+      this.sessionType = (sessionStorage.getItem('goy_session_type') as any) || 'SOVEREIGN_NSEC';
+    }
   }
 
   cleanup() {

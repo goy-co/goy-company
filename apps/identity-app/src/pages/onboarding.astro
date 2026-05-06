@@ -1,0 +1,10 @@
+---
+import IdentityLayout from '../layouts/IdentityLayout.astro';
+import OnboardingContent from '../components/Onboarding.svelte';
+---
+
+<IdentityLayout title="GoyID // Initialization">
+  <main class="min-h-screen flex items-center justify-center p-6">
+    <OnboardingContent client:load />
+  </main>
+</IdentityLayout>

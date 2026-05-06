@@ -26,8 +26,8 @@ const currentPath = Astro.url.pathname;
     <!-- Viewport Border (Visual only) -->
     <div class="fixed inset-0 border-4 border-border pointer-events-none z-[500]"></div>
     
-    <!-- Navigation Sidebar - Hidden on index/landing -->
-    {currentPath !== '/' && <Sidebar client:load {currentPath} />}
+    <!-- Navigation Sidebar - Hidden on index and onboarding -->
+    {currentPath !== '/' && currentPath !== '/onboarding' && <Sidebar client:load {currentPath} />}
 
     <!-- Main Content Area -->
     <div class="flex-1 overflow-y-auto relative custom-scrollbar">

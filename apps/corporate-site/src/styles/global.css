@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import "@fontsource-variable/jetbrains-mono";
 
 @theme inline {
   --font-heading: var(--font-mono);
@@ -77,11 +78,11 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Ecosystem Colors */
-  --eco-blue: #2563eb;
-  --eco-green: #10b981;
-  --eco-orange: #ea580c;
-  --eco-purple: #9333ea;
+  /* Ecosystem Colors (Benetton Palette) */
+  --eco-blue: #0096d6;
+  --eco-red: #e21b23;
+  --eco-green: #009345;
+  --eco-yellow: #ffcb05;
 }
 
 @layer base {
@@ -94,6 +95,7 @@
   html {
     @apply font-mono;
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
   }
 
   /* Global: Hide Scrollbars but keep functionality */

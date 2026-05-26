@@ -2,77 +2,99 @@
   const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="px-6 py-12 md:px-12 md:py-24 border-t-8 border-zinc-900 bg-zinc-100 font-mono transition-colors">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-24">
-    <!-- Contact Column -->
-    <div>
-      <h4
-        class="text-sm font-black uppercase tracking-widest mb-8 border-b-2 border-zinc-900 inline-block text-zinc-900"
-      >
-        Contact
-      </h4>
-      <p class="text-zinc-600 mb-2 hover:text-zinc-900 transition-colors cursor-pointer">contact@goy.co</p>
-      <p class="text-zinc-600">Secure PGP / Nostr Enabled</p>
-    </div>
+<footer
+  class="px-6 py-10 md:px-12 md:py-12 border-t-4 border-zinc-900 bg-zinc-950 font-mono transition-colors overflow-hidden"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- Main Compact Content Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start mb-10">
+      <!-- Brand Block (Column 1-4) -->
+      <div class="lg:col-span-4 space-y-6">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 bg-white flex items-center justify-center border-4 border-zinc-800 shrink-0"
+          >
+            <span class="text-zinc-950 font-black text-2xl tracking-tighter">G.</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-[0.4em]"
+              >Protocol_ID</span
+            >
+            <span class="text-sm font-black text-white uppercase tracking-tight"
+              >The_Goy_Company</span
+            >
+          </div>
+        </div>
+        <p class="text-xs font-black uppercase text-zinc-400 tracking-tight leading-none italic">
+          Built for privacy. Decentralized by nature.
+        </p>
+        <div class="flex gap-1">
+          <div class="w-3 h-3 bg-[#0096d6]"></div>
+          <div class="w-3 h-3 bg-[#e21b23]"></div>
+          <div class="w-3 h-3 bg-[#009345]"></div>
+          <div class="w-3 h-3 bg-[#ffcb05]"></div>
+          <div class="w-3 h-3 bg-[#f97316]"></div>
+          <div class="w-3 h-3 bg-[#8b5cf6]"></div>
+          <div class="w-3 h-3 bg-[#06b6d4]"></div>
+        </div>
+      </div>
 
-    <!-- Legal Column -->
-    <div>
-      <h4
-        class="text-sm font-black uppercase tracking-widest mb-8 border-b-2 border-zinc-900 inline-block text-zinc-900"
+      <!-- Links Grid (Column 5-12) -->
+      <div
+        class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 border-l-0 lg:border-l lg:border-zinc-900 lg:pl-12"
       >
-        Legal
-      </h4>
-      <ul class="space-y-2">
-        <li>
-          <a href="/privacy" class="text-zinc-600 underline hover:text-zinc-900 transition-colors">Privacy Policy</a>
-        </li>
-        <li>
-          <a href="/tos" class="text-zinc-600 underline hover:text-zinc-900 transition-colors">Terms of Service</a>
-        </li>
-        <li>
-          <a href="/cookies" class="text-zinc-600 underline hover:text-zinc-900 transition-colors">Cookie Policy</a>
-        </li>
-        <li>
-          <a href="/investors" class="text-zinc-600 underline hover:text-zinc-900 transition-colors">Investors</a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Infrastructure Column -->
-    <div>
-      <h4
-        class="text-sm font-black uppercase tracking-widest mb-8 border-b-2 border-zinc-900 inline-block text-zinc-900"
-      >
-        Infrastructure
-      </h4>
-      <p class="text-zinc-600 mb-2">Network Node Cluster #0412</p>
-      <p class="text-zinc-600">High-availability decentralized mesh.</p>
-      <div class="mt-4 flex gap-2">
-        <div class="w-4 h-4 bg-zinc-900"></div>
-        <div class="w-4 h-4 bg-zinc-400"></div>
-        <div class="w-4 h-4 bg-zinc-200"></div>
+        <div class="space-y-4">
+          <h4 class="text-[8px] font-black uppercase tracking-widest text-zinc-600">01_Res</h4>
+          <ul class="space-y-4 text-[10px] font-bold text-zinc-500 uppercase">
+            <li><a href="https://docs.goycompany.com" class="hover:text-white transition-colors">Docs</a></li>
+            <li>
+              <a href="https://github.com" class="hover:text-white transition-colors">Code</a>
+            </li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-[8px] font-black uppercase tracking-widest text-zinc-600">02_Eco</h4>
+          <ul class="space-y-4 text-[10px] font-bold text-zinc-500 uppercase">
+            <li>
+              <a href="https://id.goycompany.com" class="hover:text-white transition-colors">ID</a>
+            </li>
+            <li><a href="/services" class="hover:text-white transition-colors">Wallet</a></li>
+            <li><a href="/services" class="hover:text-white transition-colors">Projects</a></li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-[8px] font-black uppercase tracking-widest text-zinc-600">03_Sup</h4>
+          <ul class="space-y-4 text-[10px] font-bold text-zinc-500 uppercase">
+            <li><a href="https://status.goycompany.com" class="hover:text-white transition-colors">Status</a></li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h4 class="text-[8px] font-black uppercase tracking-widest text-zinc-400">04_Leg</h4>
+          <ul class="space-y-4 text-[10px] font-bold text-zinc-500 uppercase">
+            <li><a href="/privacy" class="hover:text-white transition-colors">Privacy</a></li>
+            <li><a href="/tos" class="hover:text-white transition-colors">Terms</a></li>
+            <li><a href="/brand" class="hover:text-white transition-colors">Brand</a></li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- Branding Column -->
-    <div class="flex flex-col items-start md:items-end justify-start">
-      <div class="w-16 h-16 bg-zinc-900 mb-8 flex items-center justify-center">
-        <span class="text-white font-black text-2xl">G.</span>
+    <!-- Bottom Bar -->
+    <div
+      class="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 border-t border-zinc-900"
+    >
+      <div class="flex items-center gap-4">
+        <span class="text-[10px] font-black text-zinc-600 uppercase">© {currentYear} Goy_Co.</span>
       </div>
-      <p class="text-xs font-black uppercase tracking-widest md:text-right text-zinc-900">
-        Engineered for users.<br />Decentralized by architecture.<br />Neutral Jurisdictions.
-      </p>
+      <div class="flex items-center gap-4 opacity-50">
+        <span
+          class="text-[8px] font-black text-zinc-700 uppercase tracking-widest italic underline decoration-zinc-800 underline-offset-4"
+          >Encrypted_AES-256</span
+        >
+        <div class="w-6 h-6 bg-white flex items-center justify-center shrink-0">
+          <div class="w-4 h-4 bg-zinc-950"></div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- Bottom Bar -->
-  <div
-    class="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm uppercase font-black text-zinc-500 gap-4 pt-8 border-t-2 border-zinc-900"
-  >
-    <span>© {currentYear} The Goy Company. All rights reserved.</span>
-    <span class="flex items-center gap-2">
-      <div class="w-2 h-2 bg-zinc-900 rounded-full animate-pulse"></div>
-      Privacy by Default. Security by Design.
-    </span>
   </div>
 </footer>

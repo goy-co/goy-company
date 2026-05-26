@@ -7,6 +7,7 @@ class GridState {
     name: '',
     display_name: '',
     nip05: '',
+    verified: false,
     bio: '',
     pubkey: '',
     avatar: '',
@@ -227,6 +228,7 @@ class GridState {
       this.profile.display_name = metadata.display_name || metadata.name || `ENTITY_${this.profile.pubkey.slice(0, 8)}`;
       this.profile.name = metadata.name || metadata.display_name || `entity_${this.profile.pubkey.slice(0, 8)}`;
       this.profile.nip05 = metadata.nip05 || '';
+      this.profile.verified = !!metadata.nip05_verified;
       this.profile.bio = metadata.about || '';
       this.profile.avatar = metadata.picture || `https://api.dicebear.com/7.x/identicon/svg?seed=${this.profile.pubkey}`;
       this.profile.banner = metadata.banner || '';
@@ -245,6 +247,7 @@ class GridState {
     this.profile.name = '';
     this.profile.display_name = '';
     this.profile.nip05 = '';
+    this.profile.verified = false;
     this.profile.bio = '';
     this.profile.avatar = '';
     this.profile.banner = '';

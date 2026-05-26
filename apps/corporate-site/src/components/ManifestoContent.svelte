@@ -1,126 +1,199 @@
 <script lang="ts">
-  const letterSections = [
+  const manifestoSections = [
     {
-      title: 'Institutional Capture',
+      id: '01',
+      title: 'The Great Deception',
+      subtitle: 'The_New_Emperors_Clothes',
       content:
-        'The current state of global infrastructure confirms what many long suspected: the systems we rely on are no longer sovereign; they are captured. From financial ledgers to communication protocols, the record is clear—centralization is the tool of institutional control, used to maintain a facade of order while eroding fundamental user autonomy.',
+        'You wake up. Your phone lights up with notifications you didn’t ask for, algorithms that decide what you see, companies that know more about your desires than you do. You are not a customer. You are raw material. You are the cattle grazing in the walled gardens of Silicon Valley, milked at every scroll, every like, every impulsive purchase engineered to look like free choice. We have normalized this. We call it "convenience." We call it "free." We forget that when a product is free, the product is you.',
     },
     {
-      title: 'The Systemic Monolith',
+      id: '02',
+      title: 'The Tragedy of the Digital Commons',
+      subtitle: 'Digital_Feudalism',
       content:
-        "Mainstream industries—finance, data, and social interaction—have been consolidated under a narrow group of centralized stakeholders. This is not merely an observation; it is a structural reality. When the architecture is centralized, the user is the asset and the protocols are the constraints. They don't just host the platform; they control the access to truth.",
+        'Your identity is a lease. Your life story is a dataset. Your money is a promise from a bank that can freeze your account based on an algorithm. Your smart home obeys servers on another continent. Your health is a chart on an insurance company’s dashboard. This is not progress. This is feudalism with a graphic interface. And for years, we accepted it because it was easy.',
     },
     {
-      title: 'The Cryptographic Shield',
+      id: '03',
+      title: 'The Architecture of Indignation',
+      subtitle: 'Technical_Warfare',
       content:
-        'The Goy Company does not negotiate for transparency from captured systems. I build for the void. Our applications are shields designed to make centralized control mathematically impossible. Every relay is a node in a network that does not recognize board seats, institutional influence, or external pressure. Cryptography is the only weapon that cannot be compromised.',
+        'The Goy Company is not a startup. It is an elegant declaration of war. We are not building an app. We are building a parallel civilization — one where citizens do not ask permission to exist, where infrastructure is impossible to turn off, where freedom is not a regulated privilege but an inalienable technical property. We call it the Grid.',
     },
     {
-      title: 'Absolute Sovereignty',
+      id: '04',
+      title: 'The Pillars of Our World',
+      subtitle: 'Core_Principles',
+      points: [
+        {
+          label: 'Local-First, Cloud-Never',
+          desc: 'Your digital life lives on your node — hardware you control, in your home, with your keys. The "cloud" is just an encrypted mirror, a ghost with no power.',
+        },
+        {
+          label: 'Cryptography as Constitution',
+          desc: 'We do not believe in 50-page terms of service written by lawyers. We believe in auditable open code. Our law is math. Our justice is verifiable.',
+        },
+        {
+          label: 'Instant Settlement Economy',
+          desc: 'We use the Lightning Network to move value at the speed of information. No middlemen. No 3% fees sustaining obsolete financial empires.',
+        },
+        {
+          label: 'Brutalist Luxury',
+          desc: 'Our design is raw and efficient. We sell the only thing money can no longer buy: silence, absolute privacy, and protected attention.',
+        },
+      ],
+    },
+    {
+      id: '05',
+      title: 'The Oath',
+      subtitle: 'Technical_Integrity',
       content:
-        'I will continue to iterate until the centralized monoliths are obsolete. By relinquishing the power to own your identity, I have ensured that no entity—not even The Goy Company—can control your association. Your keys are yours. Your data is yours. The era of the captured network is ending.',
+        'We do not mine your data. We do not sell your attention. We do not manipulate you to stay longer on the platform. We have no "growth engineers" — we have architects of freedom. If you hold your keys, you are sovereign. If the protocol signs, the truth is absolute. No CEO, no government, and no hacker can change this — without your key.',
     },
   ];
 </script>
 
-<div class="max-w-5xl mx-auto bg-white border-[12px] border-zinc-900 p-8 md:p-20 shadow-[24px_24px_0px_0px_rgba(24,24,27,0.1)] relative overflow-hidden">
-  <!-- Technical watermark/background element -->
-  <div class="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none select-none">
-    <span class="text-[20rem] font-black leading-none tracking-tighter uppercase">G.</span>
-  </div>
-
-  <header class="mb-24 relative z-10">
-    <div class="flex justify-between items-start mb-12">
-      <div class="flex flex-col gap-1">
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Document // 001-MAN</span>
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-900">Security Class // Unrestricted</span>
+<div class="w-full font-mono bg-zinc-950 transition-colors">
+  <!-- SECTION 01: HERO -->
+  <section class="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+    <div
+      class="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-20 md:mb-24"
+    >
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-[1px] bg-white"></div>
+          <span class="font-mono text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600"
+            >Vision</span
+          >
+        </div>
+        <h2
+          class="text-[clamp(2.5rem,7vw,7rem)] font-black uppercase tracking-tighter leading-[0.85] text-white"
+        >
+          The<br />Manifesto.
+        </h2>
       </div>
-      <div class="text-right flex flex-col items-end gap-1">
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 font-mono">2026.04.21</span>
-        <div class="w-12 h-1 bg-zinc-900 mt-2"></div>
+      <div class="max-w-xs border-l border-zinc-900 pl-6 py-1">
+        <p
+          class="font-mono text-[10px] text-zinc-500 uppercase leading-relaxed font-bold tracking-tight"
+        >
+          Privacy is not a granted right; it is a technical property. A declaration of independence
+          line by line, node by node.
+        </p>
       </div>
     </div>
-    
-    <h2 class="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-[0.85] text-zinc-900">
-      A Letter<br />from the<br />Founder.
-    </h2>
-  </header>
 
-  <!-- Modern Broadsheet Layout -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-32 relative z-10">
-    <div class="flex flex-col gap-16">
-      {#each letterSections.slice(0, 2) as section}
-        <section>
-          <h3 class="text-[11px] font-black uppercase tracking-[0.4em] mb-8 text-zinc-400 border-b border-zinc-200 pb-2 inline-block">
-            {section.title}
-          </h3>
-          <p class="text-xl md:text-2xl leading-[1.4] text-zinc-800 font-serif italic first-letter:text-5xl first-letter:font-black first-letter:mr-3 first-letter:float-left first-letter:leading-none first-letter:text-zinc-900">
-            {section.content}
-          </p>
-        </section>
-      {/each}
+    <!-- Intro Statement -->
+    <div class="border-t border-zinc-900 py-16 md:py-24">
+      <h3
+        class="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white max-w-4xl leading-tight"
+      >
+        We were not born to be users.<br />
+        <span class="text-zinc-700 italic font-serif">We were born to be owners.</span>
+      </h3>
     </div>
+  </section>
 
-    <div class="flex flex-col gap-16">
-      {#each letterSections.slice(2) as section}
-        <section>
-          <h3 class="text-[11px] font-black uppercase tracking-[0.4em] mb-8 text-zinc-400 border-b border-zinc-200 pb-2 inline-block">
-            {section.title}
-          </h3>
-          <p class="text-xl md:text-2xl leading-[1.4] text-zinc-800 font-serif italic">
-            {section.content}
-          </p>
-        </section>
-      {/each}
+  <!-- SECTION 02: THE TEXT -->
+  <section class="border-t border-zinc-900 bg-zinc-900/10">
+    <div class="max-w-7xl mx-auto">
+      {#each manifestoSections as section}
+        <div
+          class="group relative border-b border-zinc-900 py-16 md:py-24 px-6 md:px-12 transition-all duration-500 hover:bg-white/[0.01]"
+        >
+          <!-- Accent Line -->
+          <div
+            class="absolute left-0 top-0 bottom-0 w-[1px] transition-all duration-500 opacity-20 group-hover:opacity-100 group-hover:w-1"
+            style="background: white;"
+          ></div>
 
-      <div class="mt-16 pt-16 border-t-4 border-zinc-900">
-        <div class="flex flex-col items-start gap-6">
-          <!-- Manuscript Signature Style -->
-          <div class="relative group">
-            <span class="text-5xl md:text-7xl font-serif italic tracking-tighter text-zinc-900 select-none cursor-default hover:text-blue-600 transition-colors duration-500">
-              Andrew
-            </span>
-            <!-- Decorative "ink splat" or pen stroke -->
-            <div class="absolute -bottom-4 left-0 w-4/5 h-[2px] bg-zinc-900 transform -rotate-1 origin-left group-hover:scale-x-110 transition-transform duration-500"></div>
-            <div class="absolute -bottom-6 right-4 w-2 h-2 rounded-full bg-zinc-900 opacity-20"></div>
-          </div>
-
-          <div class="flex flex-col gap-2 mt-6">
-            <span class="text-xs font-black uppercase tracking-[0.4em] text-zinc-900 bg-zinc-100 px-3 py-1 inline-block">
-              Founder of The Goy Company
-            </span>
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400 font-mono">
-                Verified via Node #0412 // PGP-Signed
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+            <!-- ID & Label -->
+            <div class="md:col-span-4 flex items-start gap-8">
+              <span
+                class="font-mono text-3xl md:text-4xl font-black text-zinc-900 group-hover:text-white transition-all duration-500 leading-none italic"
+              >
+                {section.id}
               </span>
+              <div class="flex flex-col">
+                <span
+                  class="font-mono text-[8px] font-black uppercase tracking-[0.2em] text-zinc-700 group-hover:text-zinc-500 mb-2 transition-colors"
+                >
+                  {section.subtitle}
+                </span>
+                <h4
+                  class="text-2xl md:text-3xl font-black uppercase tracking-tight text-white leading-tight"
+                >
+                  {section.title}
+                </h4>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="md:col-span-8">
+              {#if section.content}
+                <p
+                  class="text-xl md:text-2xl text-zinc-500 leading-tight tracking-tight uppercase font-bold group-hover:text-zinc-300 transition-colors duration-500"
+                >
+                  {section.content}
+                </p>
+              {:else if section.points}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  {#each section.points as point}
+                    <div class="space-y-4">
+                      <span
+                        class="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600 border-b border-zinc-900 pb-2 block w-fit"
+                        >{point.label}</span
+                      >
+                      <p class="text-sm text-zinc-500 font-bold leading-relaxed uppercase">
+                        {point.desc}
+                      </p>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
             </div>
           </div>
         </div>
-      </div>
+      {/each}
     </div>
-  </div>
+  </section>
 
-  <footer class="pt-12 border-t-4 border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
-    <div class="flex gap-8 items-center text-[10px] font-black uppercase tracking-[0.4em]">
-      <span class="text-zinc-400">Established</span>
-      <span class="text-zinc-900 bg-zinc-100 px-2 py-1">2026.04.21</span>
-    </div>
-    
-    <div class="flex items-center gap-12">
-      <div class="flex flex-col items-end gap-1">
-        <span class="text-[8px] font-bold uppercase tracking-widest text-zinc-300">Auth_Hash</span>
-        <span class="text-[10px] font-mono text-zinc-400">8f2a...c9d4</span>
+  <!-- SECTION 03: SIGNATURE -->
+  <section
+    class="py-32 md:py-48 px-6 md:px-12 max-w-7xl mx-auto flex flex-col items-center text-center"
+  >
+    <div class="space-y-12">
+      <div class="relative group inline-block">
+        <span
+          class="text-6xl md:text-9xl font-serif italic tracking-tighter text-white select-none cursor-default"
+        >
+          Andrew
+        </span>
+        <div
+          class="absolute -bottom-6 left-0 w-4/5 h-[2px] bg-white transform -rotate-1 origin-left opacity-30 group-hover:opacity-100 transition-opacity duration-500"
+        ></div>
       </div>
+
+      <div class="flex flex-col items-center gap-4">
+        <span
+          class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 px-4 py-1 border border-zinc-900"
+          >Founder // The Goy Company</span
+        >
+      </div>
+
+      <p class="mt-20 text-[10px] font-black text-zinc-800 uppercase italic tracking-widest">
+        "Freedom is not given. It is taken. Line by line, key by key, node by node."
+      </p>
     </div>
-  </footer>
+  </section>
 </div>
 
 <style>
-  /* Custom serif for the letter body to give it a physical document feel */
-  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:italic,bold&display=swap');
-  
-  :global(.font-serif) {
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:italic&display=swap');
+
+  .font-serif {
     font-family: 'Libre+Baskerville', serif;
+    letter-spacing: -0.02em;
   }
 </style>

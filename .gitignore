@@ -36,6 +36,7 @@ playwright/.cache/
 .superpowers/
 .gemini/
 .geminiignore
+.antigravitycli/
 
 # Cloudflare / Wrangler
 .wrangler/

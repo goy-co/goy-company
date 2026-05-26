@@ -147,9 +147,18 @@
            <!-- Info -->
            <div class="flex-1 space-y-4 pb-2 min-w-0">
               <div>
-                <h2 class="text-4xl font-black uppercase tracking-tighter flex items-center gap-4 truncate">
-                  {grid.profile.name || 'ANONYMOUS_ENTITY'}
-                  {#if grid.profile.nip05}<div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.3)]"></div>{/if}
+                <h2 class="text-4xl font-black uppercase tracking-tighter flex items-center min-w-0">
+                  <span class="truncate">{grid.profile.name || 'ANONYMOUS_ENTITY'}</span>
+                  {#if grid.profile.verified}
+                    <div class="ml-4 shrink-0 flex items-center gap-1.5 px-2 py-1 border border-green-500/10 bg-green-500/5 text-green-500/80 font-black text-[9px] uppercase tracking-widest">
+                      <span>[</span>
+                      <span class="text-green-500">Verified</span>
+                      <div class="w-2 h-2 bg-zinc-950 border border-green-500/40 overflow-hidden relative translate-y-[0.5px]">
+                        <div class="absolute inset-x-0 h-[1px] bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)] animate-scanline"></div>
+                      </div>
+                      <span>]</span>
+                    </div>
+                  {/if}
                 </h2>
                 <span class="text-[11px] text-zinc-500 uppercase font-black tracking-widest mt-1 block">{grid.profile.nip05 || 'UNVERIFIED_UPLINK'}</span>
               </div>

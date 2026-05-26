@@ -7,6 +7,34 @@ import { Env } from './types';
 import { DEFAULT_RELAYS } from './constants';
 
 /**
+ * Validates NIP-05 identifier.
+ * Returns true if the pubkey matches the entry in the domain's nostr.json.
+ */
+export async function verifyNip05(nip05: string, pubkey: string): Promise<boolean> {
+  if (!nip05 || !nip05.includes('@')) return false;
+  
+  const [name, domain] = nip05.split('@');
+  const url = `https://${domain}/.well-known/nostr.json?name=${name}`;
+  
+  try {
+    const res = await fetch(url, { 
+      cf: { cacheTtl: 3600 },
+      headers: { 'Accept': 'application/json' }
+    });
+    
+    if (!res.ok) return false;
+    
+    const data = await res.json() as any;
+    const mappedPubkey = data?.names?.[name];
+    
+    return mappedPubkey?.toLowerCase() === pubkey.toLowerCase();
+  } catch (e) {
+    console.error(`[NIP05_VERIFY_ERROR] Domain: ${domain}`, e);
+    return false;
+  }
+}
+
+/**
  * Aggregates identity with Stale-While-Revalidate strategy.
  */
 export async function aggregateIdentity(identifier: string, env: Env, ctx?: ExecutionContext): Promise<any> {
@@ -37,6 +65,11 @@ export async function aggregateIdentity(identifier: string, env: Env, ctx?: Exec
   // 3. Cache Miss: Full Fetch from Sources
   const freshData = await fetchFromSource(hexPubkey, env);
   
+  // Perform initial NIP-05 verification if present
+  if (freshData.metadata?.nip05) {
+     freshData.metadata.nip05_verified = await verifyNip05(freshData.metadata.nip05, hexPubkey);
+  }
+
   // Populate KV for next time
   if (freshData && !freshData.is_fallback) {
      ctx?.waitUntil(env.IDENTITY_CACHE.put(`identity_agg:${hexPubkey}`, JSON.stringify(freshData), { expirationTtl: 3600 }));
@@ -52,6 +85,11 @@ async function revalidateIdentity(pubkey: string, cachedData: any, env: Env) {
   const freshData = await fetchFromSource(pubkey, env);
   
   if (!freshData || freshData.is_fallback) return;
+
+  // Check NIP-05 status in background
+  if (freshData.metadata?.nip05) {
+     freshData.metadata.nip05_verified = await verifyNip05(freshData.metadata.nip05, pubkey);
+  }
 
   // Simple comparison: check if metadata stringified is different
   const hasChanged = JSON.stringify(freshData.metadata) !== JSON.stringify(cachedData.metadata);
@@ -154,6 +192,12 @@ export async function anchorIdentity(pk: string, metadata: any, env: Env) {
   const db = drizzle(env.DB, { schema });
   const hexPk = pk.toLowerCase();
 
+  // Perform NIP-05 verification if present in metadata being anchored
+  let nip05_verified = false;
+  if (metadata.nip05) {
+     nip05_verified = await verifyNip05(metadata.nip05, hexPk);
+  }
+
   // 1. Clean metadata mapping
   const mappedData = {
     name: metadata.name || metadata.display_name || `entity_${hexPk.slice(0, 8)}`,
@@ -205,7 +249,8 @@ export async function anchorIdentity(pk: string, metadata: any, env: Env) {
        ...metadata, 
        pubkey: hexPk,
        display_name: mappedData.displayName,
-       picture: mappedData.image 
+       picture: mappedData.image,
+       nip05_verified // Add verified flag to cache
     },
     fetched_at: Date.now()
   };

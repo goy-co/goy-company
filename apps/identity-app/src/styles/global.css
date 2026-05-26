@@ -46,4 +46,13 @@
     width: 0 !important;
     height: 0 !important;
   }
+
+  /* Animations */
+  @keyframes scanline {
+    0% { top: -10%; }
+    100% { top: 110%; }
+  }
+  .animate-scanline {
+    animation: scanline 2s linear infinite;
+  }
 }

@@ -1,17 +1,12 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import ManifestoContent from '@components/ManifestoContent.svelte';
-import Footer from '@components/ui/Footer.svelte';
 ---
 
-<Layout title="Manifesto | The Goy Company">
+<Layout title="Manifesto | The Goy Company | Absolute Privacy">
   <main
-    class="min-h-screen bg-zinc-50 text-zinc-900 font-mono selection:bg-zinc-900 selection:text-zinc-50 transition-colors duration-300"
+    class="min-h-screen bg-zinc-950 text-white font-mono selection:bg-white selection:text-zinc-950 transition-colors duration-300"
   >
-    <div class="py-12 md:py-24">
-      <ManifestoContent client:load />
-    </div>
-
-    <Footer />
+    <ManifestoContent client:load />
   </main>
 </Layout>

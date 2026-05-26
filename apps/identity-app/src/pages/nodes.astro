@@ -1,10 +1,70 @@
 ---
 import IdentityLayout from '../layouts/IdentityLayout.astro';
-import NodesDashboard from '../components/NodesDashboard.svelte';
+import RelayLatencyList from '../components/RelayLatencyList.svelte';
+import { GlobePulse } from '../components/ui/cobe-globe-pulse';
+
+// Immersive Node Dashboard inside Identity App
 ---
 
-<IdentityLayout title="Node Configuration // Goy Identity">
-  <main class="min-h-full w-full flex items-start justify-center p-6 md:p-12 bg-zinc-950">
-    <NodesDashboard client:only="svelte" />
+<IdentityLayout title="Global Infrastructure // Goy Identity">
+  <main class="h-full w-full bg-zinc-950 text-white font-mono flex flex-col overflow-hidden">
+    <!-- Dashboard Header -->
+    <header class="px-6 py-4 border-b border-zinc-900 bg-zinc-950 shrink-0">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-4">
+          <div class="flex flex-col">
+            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-[0.4em]">Infrastructure_Control</span>
+            <h2 class="text-xl font-black text-white uppercase tracking-tighter">Network_Status</h2>
+          </div>
+          <div class="h-8 w-[1px] bg-zinc-800"></div>
+          <div class="flex flex-col">
+            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Connection_Status</span>
+            <span class="text-[10px] font-black text-green-500 uppercase">Secure_Mesh_Active</span>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-6">
+          <div class="flex flex-col items-end">
+            <span class="text-[8px] font-black text-zinc-500 uppercase tracking-widest text-right">Cluster_Load</span>
+            <span class="text-xs font-black text-white uppercase text-right">Optimal // 12%</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden min-h-0">
+      <!-- Left Column: Fixed Relay List -->
+      <div class="lg:col-span-3 h-full border-r border-zinc-900 min-h-0">
+        <RelayLatencyList client:load />
+      </div>
+
+      <!-- Right Column: Interactive Globe -->
+      <div class="lg:col-span-9 relative flex items-center justify-center p-8 bg-radial-at-c from-zinc-900/30 to-zinc-950 overflow-hidden min-h-0">
+        <div class="w-full max-w-2xl aspect-square relative z-10">
+          <GlobePulse client:only="react" />
+        </div>
+        
+        <!-- Peripheral Overlays -->
+        <div class="absolute top-8 right-8 text-right pointer-events-none">
+          <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-700 block mb-1">Grid_Visualization // v2.5</span>
+          <span class="text-[8px] font-mono text-zinc-800 uppercase">Spatial_Relay_Coordinates</span>
+        </div>
+
+        <div class="absolute bottom-8 right-8 pointer-events-none">
+          <div class="flex items-center gap-4 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 p-4">
+            <div class="flex flex-col">
+              <span class="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Grid_Relays</span>
+              <span class="text-[10px] font-black text-white">7_PRIMARY_GEOS</span>
+            </div>
+            <div class="w-[1px] h-6 bg-zinc-800"></div>
+            <div class="flex flex-col">
+              <span class="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Protocol_Stack</span>
+              <span class="text-[10px] font-black text-green-500">GOY_MESH_ALPHA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
-</IdentityLayout>
+</Layout>

@@ -14,5 +14,17 @@
   "devDependencies": {
     "vitest": "^4.1.5",
     "wrangler": "^4.85.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   }
 }

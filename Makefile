@@ -61,6 +61,9 @@ build-hub-tauri:
 lint:
 	pnpm turbo run lint
 
+lint-commits:
+	pnpm commitlint --from=main
+
 test:
 	pnpm turbo run test
 

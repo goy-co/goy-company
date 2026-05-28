@@ -2,5 +2,12 @@
   "name": "@goy/config-eslint",
   "version": "0.0.0",
   "private": true,
-  "main": "index.js"
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@eslint/js": "^9.21.0",
+    "eslint-plugin-svelte": "^3.0.3",
+    "globals": "^16.0.0",
+    "typescript-eslint": "^8.26.0"
+  }
 }

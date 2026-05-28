@@ -3,18 +3,24 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".astro/**", "out/**"]
+      "outputs": [
+        "dist/**",
+        ".astro/**",
+        "src-tauri/target/release/**",
+        "src-tauri/target/apple-darwin/release/**",
+        "src-tauri/target/x86_64-pc-windows-msvc/release/**"
+      ]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
     },
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": []
-    },
-    "lint": {
-      "outputs": []
     }
   }
 }

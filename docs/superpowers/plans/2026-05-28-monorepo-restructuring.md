@@ -178,10 +178,10 @@ git commit -m "chore: extend global configs and fix playwright commands"
 make build
 ```
 
-- [ ] **Step 2: Update all documentation**
+- [x] **Step 2: Update all documentation**
 Update `docs/SETUP.md`, `docs/ARCHITECTURE.md`, and `docs/IDENTITY.md` with new paths and names.
 
-- [ ] **Step 3: Final commit**
+- [x] **Step 3: Final commit**
 ```bash
 git add .
 git commit -m "docs: update documentation and finalize restructuring"

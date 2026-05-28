@@ -18,3 +18,4 @@ The Goy Company is not just a corporate entity; it is a digital infrastructure l
 ---
 
 > "Efficiency is the only luxury that matters in the grid."
+\n<!-- CI Test Trigger -->

@@ -7,7 +7,7 @@ on:
     branches: [main] # Também corre na main para garantir a cache global
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Garante compatibilidade futura com o runner do GitHub
 
 jobs:
   validate:
@@ -22,13 +22,13 @@ jobs:
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v4
-        # Versão lida automaticamente do package.json
+        # Versão lida automaticamente do package.json (packageManager)
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Instalar Dependências
         run: pnpm install --frozen-lockfile

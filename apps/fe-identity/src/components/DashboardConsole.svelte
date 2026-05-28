@@ -10,7 +10,7 @@
   let showLogoutModal = $state(false);
   let showEditModal = $state(false);
   let showExportModal = $state(false);
-  let selectedLog = $state<{ id: string; time: string; action: string; status: string; raw?: any } | null>(null);
+  let selectedLog = $state<{ id: string; time: string; action: string; status: string; raw?: unknown } | null>(null);
   let toast = $state<{ message: string; visible: boolean }>({ message: '', visible: false });
   let toastTimeout: ReturnType<typeof setTimeout> | undefined;
 

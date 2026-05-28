@@ -1,56 +1,74 @@
 # The Goy Company - Global Build System
-# Powered by Turborepo & pnpm
 
-.PHONY: install dev dev-grid build build-all test test-nostr lint clean help
+.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api dev-fe-hub dev-hub-tauri deploy-be-api build build-all build-fe-corporate build-fe-identity build-fe-hub build-hub-tauri lint test check db-migrate-local db-studio clean help
 
 # --- Installation ---
 install:
 	pnpm install
 
 # --- Development ---
-# Runs dev for all apps in the grid (Corporate, Identity, API)
+dev: dev-fe-corporate
+
+# Starts the entire ecosystem: Corporate Site, Identity App, and Edge API via Turbo
 dev-grid:
 	pnpm turbo run dev --filter=@goy/fe-corporate --filter=@goy/fe-identity --filter=@goy/be-api
 
-# Default dev (Corporate)
-dev:
+dev-fe-corporate:
 	pnpm turbo run dev --filter=@goy/fe-corporate
 
-# Specific App Dev
-dev-fe-%:
-	pnpm turbo run dev --filter=@goy/fe-$*
+dev-fe-identity:
+	pnpm turbo run dev --filter=@goy/fe-identity
 
-# Tauri Dev
-dev-hub:
+dev-be-api:
+	pnpm turbo run dev --filter=@goy/be-api
+
+dev-fe-hub:
+	pnpm turbo run dev --filter=@goy/fe-hub
+
+dev-hub-tauri:
 	pnpm turbo run tauri --filter=@goy/fe-hub -- dev
 
+# --- Deployment ---
+deploy-be-api:
+	pnpm --filter @goy/be-api deploy
+
+# --- Database ---
+db-migrate-local:
+	pnpm --filter @goy/be-api wrangler d1 migrations apply goy-db --local
+
+db-studio:
+	pnpm --filter @goy/be-api run db:studio
+
 # --- Build ---
-# Builds everything in the correct order based on dependencies
-build:
+build: build-all
+
+build-all:
 	pnpm turbo run build
 
-build-all: build
+build-fe-corporate:
+	pnpm turbo run build --filter=@goy/fe-corporate
 
-# Specific App Build
-build-fe-%:
-	pnpm turbo run build --filter=@goy/fe-$*
+build-fe-identity:
+	pnpm turbo run build --filter=@goy/fe-identity
 
-# --- Testing & Quality ---
+build-fe-hub:
+	pnpm turbo run build --filter=@goy/fe-hub
+
+build-hub-tauri:
+	pnpm turbo run tauri --filter=@goy/fe-hub -- build
+
+# --- Quality Control ---
+lint:
+	pnpm turbo run lint
+
 test:
 	pnpm turbo run test
 
 test-nostr:
 	pnpm --filter @goy/nostr test
 
-lint:
-	pnpm turbo run lint
-
-# --- Database ---
-db-migrate:
-	pnpm --filter @goy/be-api wrangler d1 migrations apply goy-db --local
-
-db-studio:
-	pnpm --filter @goy/be-api run db:studio
+check:
+	pnpm turbo run check
 
 # --- Cleanup ---
 clean:
@@ -64,9 +82,21 @@ help:
 	@echo "The Goy Company Monorepo CLI"
 	@echo ""
 	@echo "Usage: make [target]"
-	@echo "  dev-grid      Run the core grid apps (Corporate, Identity, API) in parallel"
-	@echo "  build         Build all workspace projects (Turbo optimized)"
-	@echo "  test          Run all tests via Turbo"
-	@echo "  test-nostr    Run tests specifically for the Nostr package"
-	@echo "  db-migrate    Apply D1 migrations to local database"
-	@echo "  clean         Remove all build artifacts"
+	@echo ""
+	@echo "Targets:"
+	@echo "  install          Install all dependencies"
+	@echo "  dev-grid         Run all apps (Corporate, Identity, API) in parallel via Turbo"
+	@echo "  dev-fe-corporate Run fe-corporate in dev mode"
+	@echo "  dev-fe-identity  Run fe-identity in dev mode"
+	@echo "  dev-be-api       Run be-api in dev mode"
+	@echo "  dev-fe-hub       Run fe-hub (Astro) in dev mode"
+	@echo "  dev-hub-tauri    Run fe-hub in Tauri desktop client"
+	@echo "  db-migrate-local Apply D1 migrations to local development database"
+	@echo "  db-studio        Open Drizzle Studio to visualize local data"
+	@echo "  build-all        Build all workspace projects (Turbo optimized)"
+	@echo "  build-fe-hub     Build fe-hub static frontend"
+	@echo "  build-hub-tauri  Build and package fe-hub Tauri native client"
+	@echo "  lint             Lint all projects"
+	@echo "  test             Run all tests"
+	@echo "  test-nostr       Run tests for the Nostr package"
+	@echo "  clean            Remove all build artifacts"

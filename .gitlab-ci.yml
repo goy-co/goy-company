@@ -63,4 +63,3 @@ build-smoke-test:
       - "apps/*/dist"
       - "services/*/dist"
     expire_in: 1 day
-\n# GitLab CI Trigger Test

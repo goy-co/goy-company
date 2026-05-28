@@ -1,0 +1,11 @@
+{
+  "extends": "@goy/config-ts/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "wrangler.jsonc", "drizzle.config.ts"],
+  "exclude": ["node_modules"]
+}

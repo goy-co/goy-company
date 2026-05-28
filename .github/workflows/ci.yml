@@ -1,0 +1,60 @@
+name: CI (Validar Ecossistema)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main] # Também corre na main para garantir a cache global
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Garante compatibilidade futura com o runner do GitHub
+
+jobs:
+  validate:
+    name: Validar Código e Commits
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # O commitlint e o turbo precisam do histórico completo para comparar branches
+
+      - name: Instalar o pnpm
+        uses: pnpm/action-setup@v4
+        # Versão lida automaticamente do package.json (packageManager)
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Instalar Dependências
+        run: pnpm install --frozen-lockfile
+
+      # 1. Validar se os commits do PR seguem o padrão (Conventional Commits)
+      - name: Validar Mensagens de Commit
+        if: github.event_name == 'pull_request'
+        run: pnpm commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+      # 2. Configurar a Cache do Turborepo no GitHub Actions
+      - name: Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      # 3. Executar Lint e Testes apenas no que mudou (Graças ao Turbo)
+      - name: Executar Lint (Formatters/Linters)
+        run: pnpm turbo run lint
+
+      - name: Executar Testes Automatizados
+        run: pnpm turbo run test
+
+      # 4. Validar se o build do Frontend e Worker não quebram
+      # Nota: Deixamos o build do Rust/Tauri fora deste CI rápido de PRs para poupar tempo.
+      - name: Validar Build (Astro & Workers)
+        run: pnpm turbo run build --filter=!@goy/fe-hub

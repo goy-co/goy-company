@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fade } from "svelte/transition";;
   import { grid } from '$lib/grid-state.svelte';
 
   // Wealth Specific State
@@ -98,7 +98,7 @@
               </tr>
             </thead>
             <tbody class="text-sm">
-              {#each assets as asset}
+              {#each assets as asset (asset.symbol)}
                 <tr class="border-b border-zinc-900/50 hover:bg-zinc-900/20 transition-colors group">
                   <td class="p-6">
                     <div class="flex items-center gap-3">
@@ -177,7 +177,7 @@
         </header>
         
         <div class="space-y-6 flex-1">
-          {#each history as item}
+          {#each history as item (item.id)}
             <div class="group">
               <div class="flex justify-between items-start mb-1">
                 <span class={`text-[9px] font-black ${item.type === 'OUTGOING' ? 'text-red-500' : 'text-green-500'}`}>

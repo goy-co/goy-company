@@ -37,8 +37,13 @@ jobs:
         run: pnpm commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       # 2. Configurar a Cache do Turborepo no GitHub Actions
-      - name: Configurar Cache do Turbo
-        uses: dtinth/setup-github-actions-turbo-cache@v1
+      - name: Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       # 3. Executar Lint e Testes apenas no que mudou (Graças ao Turbo)
       - name: Executar Lint (Formatters/Linters)

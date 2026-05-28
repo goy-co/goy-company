@@ -6,6 +6,11 @@ node_modules/
 dist/
 .astro/
 .svelte-kit/
+apps/fe-hub/src-tauri/target/
+apps/fe-hub/src-tauri/gen/
+
+# Turborepo
+.turbo/
 
 # Logs
 npm-debug.log*
@@ -18,10 +23,12 @@ pnpm-debug.log*
 .env.local
 .env.production
 .env.development
+.env.*
 
 # OS files
 .DS_Store
 Thumbs.db
+*.icloud
 
 # IDEs & Editor
 .vscode/
@@ -56,3 +63,6 @@ worker-configuration.d.ts
 *.pfx
 *.p12
 .node_repl_history
+
+# Husky
+.husky/_/

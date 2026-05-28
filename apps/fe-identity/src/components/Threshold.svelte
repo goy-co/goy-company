@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import {
     generateIdentity,
@@ -73,10 +72,14 @@
       setTimeout(() => {
         window.location.href = targetPath;
       }, 1500);
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('Auth Error Details:', e);
-      authError = e.statusText || e.message || 'AUTH_PROTOCOL_FAILURE';
-      if (e.body?.message) authError = e.body.message;
+      if (e && typeof e === 'object' && 'message' in e) {
+        authError = (e as any).statusText || (e as any).message || 'AUTH_PROTOCOL_FAILURE';
+        if ((e as any).body?.message) authError = (e as any).body.message;
+      } else {
+        authError = 'AUTH_PROTOCOL_FAILURE';
+      }
       status = 'TRADITIONAL';
     } finally {
       isLoading = false;
@@ -98,7 +101,7 @@
       sessionStorage.setItem('goy_privkey', nsecInput.trim());
       sessionStorage.setItem('goy_session_type', 'SOVEREIGN_NSEC');
       setTimeout(() => (window.location.href = '/dashboard'), 1500);
-    } catch (e: any) {
+    } catch (_e) {
       extensionError = 'INVALID_SECRET_KEY';
     }
   }
@@ -115,8 +118,8 @@
       sessionStorage.setItem('goy_pubkey', pubkey);
       sessionStorage.setItem('goy_session_type', 'SOVEREIGN_EXT');
       setTimeout(() => (window.location.href = '/dashboard'), 1500);
-    } catch (e: any) {
-      extensionError = e.message;
+    } catch (e: unknown) {
+      extensionError = e instanceof Error ? e.message : String(e);
     }
   }
   function copyToClipboard(text: string, type: 'NPUB' | 'NSEC') {

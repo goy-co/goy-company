@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
 
   let isLoading = $state(true);
@@ -83,7 +83,7 @@
         </header>
 
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          {#each grid.relays as relay}
+          {#each grid.relays as relay (relay.name)}
             <div class="bg-black border border-zinc-800 p-4 flex justify-between items-center group hover:border-zinc-500 transition-colors relative">
               <div>
                 <span class="text-[10px] font-black text-white uppercase block">{relay.name}</span>

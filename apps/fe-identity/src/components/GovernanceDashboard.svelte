@@ -45,7 +45,9 @@
     isSubmitting = true;
     try {
       // Create a proof of identity event (kind 27235 is standard for HTTP Auth)
-      const event = await (window as any).nostr.signEvent({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nostr = (window as any).nostr;
+      const event = await nostr.signEvent({
         kind: 27235,
         created_at: Math.floor(Date.now() / 1000),
         tags: [['u', window.location.href]],
@@ -179,7 +181,7 @@
         </header>
 
         <div class="divide-y divide-zinc-900">
-          {#each proposals as proposal}
+          {#each proposals as proposal (proposal.id)}
             <div class="p-8 group hover:bg-zinc-900/10 transition-all">
               <div class="flex justify-between items-start mb-4">
                  <div>

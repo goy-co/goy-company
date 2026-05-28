@@ -10,11 +10,9 @@
   let showLogoutModal = $state(false);
   let showEditModal = $state(false);
   let showExportModal = $state(false);
-  let selectedLog = $state<any>(null);
-  let avatarLoaded = $state(false);
-  let bannerLoaded = $state(false);
+  let selectedLog = $state<{ id: string; time: string; action: string; status: string; raw?: any } | null>(null);
   let toast = $state<{ message: string; visible: boolean }>({ message: '', visible: false });
-  let toastTimeout: any;
+  let toastTimeout: ReturnType<typeof setTimeout> | undefined;
 
   function showToast(message: string) {
     if (toastTimeout) clearTimeout(toastTimeout);
@@ -88,9 +86,10 @@
       sessionStorage.removeItem('goy_user_id');
       grid.cleanup();
       
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      showToast(`MIGRATION_FAILED: ${e.message}`);
+      const message = e instanceof Error ? e.message : 'Unknown error';
+      showToast(`MIGRATION_FAILED: ${message}`);
       showExportModal = false;
     } finally {
       isExporting = false;
@@ -261,7 +260,7 @@
          <div class="p-3 flex-1 flex flex-col min-h-0 justify-center">
             {#if grid.sessionType !== 'TRADITIONAL'}
               <div class="space-y-1.5 overflow-hidden flex-1 flex flex-col justify-center">
-                {#each grid.relays.slice(0, 3) as relay}
+                {#each grid.relays.slice(0, 3) as relay (relay.name)}
                   <div class="flex items-center justify-between p-1.5 border border-zinc-900 bg-black/20">
                     <span class="text-[8px] font-black text-zinc-500 uppercase truncate mr-2">{relay.name}</span>
                     <span class="text-[8px] font-black text-green-500/80 tabular-nums">{relay.latency.toFixed(0)}ms</span>

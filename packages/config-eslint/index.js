@@ -16,6 +16,10 @@ export default [
     rules: {
       "no-unused-vars": "warn",
       "no-undef": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+      "svelte/require-each-key": "warn",
+      "no-empty": "warn"
     },
   },
 ];

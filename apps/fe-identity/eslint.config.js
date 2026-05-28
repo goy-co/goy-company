@@ -16,7 +16,10 @@ export default tseslint.config(
   },
   {
     rules: {
-      // Add custom rules here
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'svelte/require-each-key': 'warn',
+      'no-empty': 'warn',
     },
   },
   {

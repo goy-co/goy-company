@@ -29,7 +29,7 @@ We provide a clear path for entities to transition from Traditional to Sovereign
 6. **Rebirth**: The user re-enters the Grid using their new sovereign keys.
 
 ## Technical Resolution
-The `api-worker` acts as an **Identity Aggregator**. When a request is made for an ID, the worker:
+The `be-api` acts as an **Identity Aggregator**. When a request is made for an ID, the worker:
 1. Checks if it's a 64-char Hex (Nostr).
 2. If not, checks the D1 database for a UUID match.
 3. Automatically repairs legacy prefixes (like `GUEST_`) to ensure seamless uplink.

@@ -16,7 +16,7 @@
 2. **Database Initialization**:
    Create a local D1 instance and run migrations:
    ```bash
-   cd services/api-worker
+   cd apps/be-api
    pnpm wrangler d1 migrations apply goy-db --local
    ```
 
@@ -24,11 +24,11 @@
    From the root directory:
    ```bash
    # Start the API Worker (Edge Simulator)
-   cd services/api-worker
+   cd apps/be-api
    pnpm dev
    
    # Start the Identity App
-   cd apps/identity-app
+   cd apps/fe-identity
    pnpm dev
    ```
 

@@ -146,7 +146,7 @@ Update all `--filter` commands and script names (e.g., `dev:corporate` -> `dev:f
 Set `"name": "be-api"`.
 
 - [ ] **Step 4: Fix hardcoded API URLs**
-Update any references to `api-worker.goycompany.workers.dev` to `be-api.goycompany.workers.dev` (or the new production URL).
+Update any references to `be-api.goycompany.workers.dev` to `be-api.goycompany.workers.dev` (or the new production URL).
 
 - [ ] **Step 5: Commit tooling and URL updates**
 ```bash

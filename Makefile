@@ -1,43 +1,43 @@
 # The Goy Company - Global Build System
 
-.PHONY: install dev dev-grid dev-corporate dev-identity dev-api dev-hub tauri-hub-dev deploy-api build build-all build-corporate build-identity build-hub tauri-hub-build lint test check db-migrate-local clean help
+.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api dev-fe-hub tauri-fe-hub-dev deploy-be-api build build-all build-fe-corporate build-fe-identity build-fe-hub tauri-fe-hub-build lint test check db-migrate-local clean help
 
 # --- Installation ---
 install:
 	pnpm install
 
 # --- Development ---
-dev: dev-corporate
+dev: dev-fe-corporate
 
 # Starts the entire ecosystem: Corporate Site, Identity App, and Edge API
 dev-grid:
-	pnpm --filter corporate-site --filter identity-app --filter @goy/api-worker --parallel dev
+	pnpm --filter @goy/fe-corporate --filter @goy/fe-identity --filter @goy/be-api --parallel dev
 
-dev-corporate:
-	pnpm --filter corporate-site dev
+dev-fe-corporate:
+	pnpm --filter @goy/fe-corporate dev
 
-dev-identity:
-	pnpm --filter identity-app dev
+dev-fe-identity:
+	pnpm --filter @goy/fe-identity dev
 
-dev-api:
-	pnpm --filter @goy/api-worker dev
+dev-be-api:
+	pnpm --filter @goy/be-api dev
 
-dev-hub:
-	pnpm --filter goy-hub dev
+dev-fe-hub:
+	pnpm --filter @goy/fe-hub dev
 
-tauri-hub-dev:
-	pnpm --filter goy-hub tauri dev
+tauri-fe-hub-dev:
+	pnpm --filter @goy/fe-hub tauri dev
 
 # --- Deployment ---
-deploy-api:
-	pnpm --filter @goy/api-worker deploy
+deploy-be-api:
+	pnpm --filter @goy/be-api deploy
 
 # --- Database ---
 db-migrate-local:
-	pnpm --filter @goy/api-worker wrangler d1 migrations apply goy-db --local
+	pnpm --filter @goy/be-api wrangler d1 migrations apply goy-db --local
 
 db-studio:
-	pnpm --filter @goy/api-worker run db:studio
+	pnpm --filter @goy/be-api run db:studio
 
 # --- Build ---
 build: build-all
@@ -45,17 +45,17 @@ build: build-all
 build-all:
 	pnpm -r build
 
-build-corporate:
-	pnpm --filter corporate-site build
+build-fe-corporate:
+	pnpm --filter @goy/fe-corporate build
 
-build-identity:
-	pnpm --filter identity-app build
+build-fe-identity:
+	pnpm --filter @goy/fe-identity build
 
-build-hub:
-	pnpm --filter goy-hub build
+build-fe-hub:
+	pnpm --filter @goy/fe-hub build
 
-tauri-hub-build:
-	pnpm --filter goy-hub tauri build
+tauri-fe-hub-build:
+	pnpm --filter @goy/fe-hub tauri build
 
 # --- Quality Control ---
 lint:
@@ -72,7 +72,7 @@ clean:
 	find . -name "dist" -type d -exec rm -rf {} +
 	find . -name ".astro" -type d -exec rm -rf {} +
 	find . -name "node_modules" -type d -exec rm -rf {} +
-	rm -rf apps/goy-hub/src-tauri/target
+	rm -rf apps/fe-hub/src-tauri/target
 
 # --- Help ---
 help:
@@ -83,16 +83,16 @@ help:
 	@echo "Targets:"
 	@echo "  install          Install all dependencies"
 	@echo "  dev-grid         Run all apps (Corporate, Identity, API) in parallel"
-	@echo "  dev-corporate    Run corporate-site in dev mode"
-	@echo "  dev-identity     Run identity-app in dev mode"
-	@echo "  dev-api          Run api-worker in dev mode"
-	@echo "  dev-hub          Run goy-hub in dev mode"
-	@echo "  tauri-hub-dev    Run goy-hub in Tauri desktop client"
+	@echo "  dev-fe-corporate Run fe-corporate in dev mode"
+	@echo "  dev-fe-identity  Run fe-identity in dev mode"
+	@echo "  dev-be-api       Run be-api in dev mode"
+	@echo "  dev-fe-hub       Run fe-hub in dev mode"
+	@echo "  tauri-fe-hub-dev Run fe-hub in Tauri desktop client"
 	@echo "  db-migrate-local Apply D1 migrations to local development database"
 	@echo "  db-studio        Open Drizzle Studio to visualize local data"
 	@echo "  build-all        Build all workspace projects"
-	@echo "  build-hub        Build goy-hub static frontend"
-	@echo "  tauri-hub-build  Build and package goy-hub Tauri native client"
+	@echo "  build-fe-hub     Build fe-hub static frontend"
+	@echo "  tauri-fe-hub-build Build and package fe-hub Tauri native client"
 	@echo "  lint             Lint all projects"
 	@echo "  test             Run all tests"
 	@echo "  clean            Remove all build artifacts and node_modules"

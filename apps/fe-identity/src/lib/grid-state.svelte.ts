@@ -138,7 +138,7 @@ class GridState {
     
     try {
       if (typeof window === 'undefined') return;
-      const host = window.location.hostname === 'localhost' ? 'localhost:8787' : 'api-worker.goycompany.workers.dev';
+      const host = window.location.hostname === 'localhost' ? 'localhost:8787' : 'be-api.goycompany.workers.dev';
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       const socket = new WebSocket(`${protocol}://${host}/uplink/${pubkey}`);
 
@@ -175,7 +175,7 @@ class GridState {
     if (this.sessionType !== 'SOVEREIGN_EXT' || !(window as any).nostr) return;
 
     try {
-      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://be-api.goycompany.workers.dev';
       const url = `${host}/profile/${this.profile.pubkey}`;
       const event = await (window as any).nostr.signEvent({
         kind: 27235,
@@ -190,7 +190,7 @@ class GridState {
   private async notifyWorker(pubkey: string, payload: any) {
     if (typeof window === 'undefined') return;
     try {
-      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://be-api.goycompany.workers.dev';
       const res = await fetch(`${host}/profile/${pubkey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

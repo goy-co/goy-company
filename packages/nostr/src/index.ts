@@ -3,7 +3,7 @@ import { Relay } from 'nostr-tools/relay';
 import { finalizeEvent } from 'nostr-tools/pure';
 
 export const PRIMAL_RELAY = 'wss://relay.primal.net';
-export const API_GATEWAY = 'https://api-worker.goycompany.workers.dev'; // Placeholder for production
+export const API_GATEWAY = 'https://be-api.goycompany.workers.dev'; // Placeholder for production
 
 export const DEFAULT_RELAYS = [
   PRIMAL_RELAY,

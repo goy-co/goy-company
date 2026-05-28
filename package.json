@@ -5,25 +5,20 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev:corporate": "pnpm --filter corporate-site dev",
-    "build:corporate": "pnpm --filter corporate-site build",
-    "dev:identity": "pnpm --filter identity-app dev",
-    "build:identity": "pnpm --filter identity-app build",
-    "dev:hub": "pnpm --filter goy-hub dev",
-    "build:hub": "pnpm --filter goy-hub build",
-    "tauri:hub:dev": "pnpm --filter goy-hub tauri dev",
-    "tauri:hub:build": "pnpm --filter goy-hub tauri build",
-    "preview:corporate": "pnpm --filter corporate-site preview"
+    "dev:fe-corporate": "pnpm --filter @goy/fe-corporate dev",
+    "build:fe-corporate": "pnpm --filter @goy/fe-corporate build",
+    "dev:fe-identity": "pnpm --filter @goy/fe-identity dev",
+    "build:fe-identity": "pnpm --filter @goy/fe-identity build",
+    "dev:fe-hub": "pnpm --filter @goy/fe-hub dev",
+    "build:fe-hub": "pnpm --filter @goy/fe-hub build",
+    "tauri:fe-hub:dev": "pnpm --filter @goy/fe-hub tauri dev",
+    "tauri:fe-hub:build": "pnpm --filter @goy/fe-hub tauri build",
+    "preview:fe-corporate": "pnpm --filter @goy/fe-corporate preview"
   },
   "devDependencies": {
     "vitest": "^4.1.5",
     "wrangler": "^4.85.0"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "services/*"
-  ],
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

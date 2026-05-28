@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "api-worker",
+  "name": "be-api",
   "main": "src/index.ts",
   "compatibility_date": "2025-05-01",
   "compatibility_flags": ["nodejs_compat_v2"],

@@ -63,7 +63,7 @@
   async function handleExportConfirm() {
     isExporting = true;
     try {
-      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev';
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://be-api.goycompany.workers.dev';
       const userId = sessionStorage.getItem('goy_user_id');
       
       const res = await fetch(`${host}/api/migrate-to-nostr`, {

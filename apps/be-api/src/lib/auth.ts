@@ -10,7 +10,7 @@ export const getAuth = (db: D1Database, env: any) => {
       schema: schema,
     }),
     secret: env.BETTER_AUTH_SECRET,
-    baseURL: env.ENVIRONMENT === 'development' ? 'http://localhost:8787' : 'https://api-worker.goycompany.workers.dev',
+    baseURL: env.ENVIRONMENT === 'development' ? 'http://localhost:8787' : 'https://be-api.goycompany.workers.dev',
     trustedOrigins: [
       "http://localhost:4321",
       "http://localhost:4322",

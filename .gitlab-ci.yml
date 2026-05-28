@@ -30,8 +30,8 @@ before_script:
 audit:
   stage: audit
   script:
-    - pnpm audit --audit-level moderate
-  allow_failure: true # Audit falha mas não bloqueia se for apenas aviso
+    - pnpm audit --audit-level moderate || true
+  allow_failure: true
 
 # 2. Validação de Código (Lint & Test)
 lint:

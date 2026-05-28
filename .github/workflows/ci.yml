@@ -6,6 +6,9 @@ on:
   push:
     branches: [main] # Também corre na main para garantir a cache global
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Garante compatibilidade futura com o runner do GitHub
+
 jobs:
   validate:
     name: Validar Código e Commits
@@ -19,8 +22,7 @@ jobs:
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11 # Sincronizado com a versão local (pnpm@11.4.0)
+        # Versão lida automaticamente do package.json (packageManager)
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4

@@ -16,14 +16,8 @@
     "preview:fe-corporate": "pnpm --filter @goy/fe-corporate preview"
   },
   "devDependencies": {
+    "turbo": "^2.4.4",
     "vitest": "^4.1.5",
     "wrangler": "^4.85.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "workerd"
-    ]
   }
 }

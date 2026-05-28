@@ -1,0 +1,65 @@
+image: node:22-bookworm
+
+variables:
+  PNPM_HOME: "${CI_PROJECT_DIR}/.pnpm-store"
+  TURBO_CACHE_DIR: "${CI_PROJECT_DIR}/.turbo"
+
+stages:
+  - audit
+  - validate
+  - build
+
+# Cache global para pnpm e turbo
+cache:
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+    - node_modules
+    - .turbo
+  policy: pull-push
+
+before_script:
+  - corepack enable
+  - corepack prepare pnpm@latest-11 --activate
+  - pnpm config set store-dir .pnpm-store
+  - pnpm install --frozen-lockfile
+
+# 1. Auditoria de Segurança
+audit:
+  stage: audit
+  script:
+    - pnpm audit --audit-level moderate
+  allow_failure: true # Audit falha mas não bloqueia se for apenas aviso
+
+# 2. Validação de Código (Lint & Test)
+lint:
+  stage: validate
+  script:
+    - pnpm turbo run lint
+  artifacts:
+    when: on_failure
+    paths:
+      - "**/eslint-report.json"
+    expire_in: 1 week
+
+unit-tests:
+  stage: validate
+  script:
+    - pnpm turbo run test
+  artifacts:
+    reports:
+      junit: "**/junit.xml"
+
+# 3. Validar Build (Astro & Workers)
+# Filtramos a app Tauri para economizar recursos de CI
+build-smoke-test:
+  stage: build
+  script:
+    - pnpm turbo run build --filter=!@goy/fe-hub
+  artifacts:
+    paths:
+      - "apps/*/dist"
+      - "services/*/dist"
+    expire_in: 1 day

@@ -75,8 +75,8 @@
     } catch (e: unknown) {
       console.error('Auth Error Details:', e);
       if (e && typeof e === 'object' && 'message' in e) {
-        authError = (e as any).statusText || (e as any).message || 'AUTH_PROTOCOL_FAILURE';
-        if ((e as any).body?.message) authError = (e as any).body.message;
+        authError = (e as { statusText?: string }).statusText || (e as Error).message || 'AUTH_PROTOCOL_FAILURE';
+        if ((e as { body?: { message: string } }).body?.message) authError = (e as { body: { message: string } }).body.message;
       } else {
         authError = 'AUTH_PROTOCOL_FAILURE';
       }
@@ -101,7 +101,7 @@
       sessionStorage.setItem('goy_privkey', nsecInput.trim());
       sessionStorage.setItem('goy_session_type', 'SOVEREIGN_NSEC');
       setTimeout(() => (window.location.href = '/dashboard'), 1500);
-    } catch (_e) {
+    } catch (e) {
       extensionError = 'INVALID_SECRET_KEY';
     }
   }
@@ -215,7 +215,7 @@ PROTOCOL: NOSTR_SOVEREIGN_V1
       {#if status === 'IDLE' && !showImport}
         <div class="space-y-12">
           <div class="space-y-4">
-            {#each terminalLines as line, i}
+            {#each terminalLines as line, i (i)}
               <div in:fly={{ y: 5, delay: i * 150 }} class="text-xs text-zinc-400">
                 <span class="text-zinc-600 mr-2">>>></span>
                 {line}

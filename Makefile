@@ -1,6 +1,6 @@
 # The Goy Company - Global Build System
 
-.PHONY: install dev dev-grid dev-corporate dev-identity dev-api deploy-api build build-all build-corporate build-identity lint test check db-migrate-local clean help
+.PHONY: install dev dev-grid dev-corporate dev-identity dev-api dev-hub tauri-hub-dev deploy-api build build-all build-corporate build-identity build-hub tauri-hub-build lint test check db-migrate-local clean help
 
 # --- Installation ---
 install:
@@ -21,6 +21,12 @@ dev-identity:
 
 dev-api:
 	pnpm --filter @goy/api-worker dev
+
+dev-hub:
+	pnpm --filter goy-hub dev
+
+tauri-hub-dev:
+	pnpm --filter goy-hub tauri dev
 
 # --- Deployment ---
 deploy-api:
@@ -45,6 +51,12 @@ build-corporate:
 build-identity:
 	pnpm --filter identity-app build
 
+build-hub:
+	pnpm --filter goy-hub build
+
+tauri-hub-build:
+	pnpm --filter goy-hub tauri build
+
 # --- Quality Control ---
 lint:
 	pnpm -r lint
@@ -60,6 +72,7 @@ clean:
 	find . -name "dist" -type d -exec rm -rf {} +
 	find . -name ".astro" -type d -exec rm -rf {} +
 	find . -name "node_modules" -type d -exec rm -rf {} +
+	rm -rf apps/goy-hub/src-tauri/target
 
 # --- Help ---
 help:
@@ -73,9 +86,13 @@ help:
 	@echo "  dev-corporate    Run corporate-site in dev mode"
 	@echo "  dev-identity     Run identity-app in dev mode"
 	@echo "  dev-api          Run api-worker in dev mode"
+	@echo "  dev-hub          Run goy-hub in dev mode"
+	@echo "  tauri-hub-dev    Run goy-hub in Tauri desktop client"
 	@echo "  db-migrate-local Apply D1 migrations to local development database"
 	@echo "  db-studio        Open Drizzle Studio to visualize local data"
 	@echo "  build-all        Build all workspace projects"
+	@echo "  build-hub        Build goy-hub static frontend"
+	@echo "  tauri-hub-build  Build and package goy-hub Tauri native client"
 	@echo "  lint             Lint all projects"
 	@echo "  test             Run all tests"
 	@echo "  clean            Remove all build artifacts and node_modules"

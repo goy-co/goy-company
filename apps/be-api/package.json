@@ -1,5 +1,5 @@
 {
-  "name": "@goy/api-worker",
+  "name": "@goy/be-api",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,8 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260426.1",
+    "@goy/config-eslint": "workspace:*",
+    "@goy/config-ts": "workspace:*",
     "@goy/nostr": "workspace:*",
     "@libsql/client": "^0.17.3",
     "drizzle-kit": "^0.31.10",

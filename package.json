@@ -9,6 +9,10 @@
     "build:corporate": "pnpm --filter corporate-site build",
     "dev:identity": "pnpm --filter identity-app dev",
     "build:identity": "pnpm --filter identity-app build",
+    "dev:hub": "pnpm --filter goy-hub dev",
+    "build:hub": "pnpm --filter goy-hub build",
+    "tauri:hub:dev": "pnpm --filter goy-hub tauri dev",
+    "tauri:hub:build": "pnpm --filter goy-hub tauri build",
     "preview:corporate": "pnpm --filter corporate-site preview"
   },
   "devDependencies": {

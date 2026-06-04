@@ -12,7 +12,7 @@ jobs:
   deploy-worker:
     name: Deploy API Worker
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'goy-company'
+    if: github.repository_owner == 'the-goy-company'
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4

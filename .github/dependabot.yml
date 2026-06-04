@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # Atualizar dependências npm do monorepo semanalmente
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Lisbon"
+    open-pull-requests-limit: 10
+    groups:
+      # Agrupa atualizações de dev dependencies numa só PR
+      dev-dependencies:
+        dependency-type: "development"
+      # Agrupa os pacotes do turbo e changesets
+      build-tools:
+        patterns:
+          - "turbo"
+          - "@changesets/*"
+          - "@commitlint/*"
+          - "husky"
+          - "prettier*"
+
+  # Atualizar GitHub Actions mensalmente
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5

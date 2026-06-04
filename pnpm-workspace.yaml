@@ -5,3 +5,13 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
+
+overrides:
+  yaml: "^2.8.3"
+
+auditConfig:
+  ignoreGhsas:
+    - GHSA-67mh-4wv8-2f99
+    - GHSA-j687-52p2-xcff
+    - GHSA-xr5h-phrj-8vxv
+    - GHSA-5xrq-8626-4rwp

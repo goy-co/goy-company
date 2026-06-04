@@ -120,7 +120,7 @@
 
     <!-- The Stack Grid -->
     <div class="border-t border-zinc-900">
-      {#each layers as layer}
+      {#each layers as layer (layer.id)}
         <div
           class="group relative border-b border-zinc-900 py-8 md:py-10 transition-all duration-500 hover:bg-white/[0.01]"
         >
@@ -165,7 +165,7 @@
                 >Includes_Services:</span
               >
               <div class="flex flex-wrap md:justify-end gap-1.5">
-                {#each layer.modules as module}
+                {#each layer.modules as module (module)}
                   <span
                     class="px-2 py-1 bg-zinc-900/50 border border-zinc-800 text-[8px] font-black text-zinc-600 uppercase tracking-tighter group-hover:border-zinc-700 group-hover:text-zinc-400 transition-all"
                   >

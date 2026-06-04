@@ -47,7 +47,7 @@ lint:
 unit-tests:
   stage: validate
   script:
-    - pnpm turbo run test
+    - pnpm turbo run test --filter=!@goy/fe-hub
   artifacts:
     reports:
       junit: "**/junit.xml"

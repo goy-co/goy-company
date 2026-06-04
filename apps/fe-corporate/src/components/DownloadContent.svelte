@@ -1,8 +1,6 @@
 <script lang="ts">
   import { downloadData } from '$lib/download-data';
-  import { fade, fly } from 'svelte/transition';
 
-  let hoveredArtifact = $state<string | null>(null);
   let copyStatus = $state<'idle' | 'copied'>('idle');
 
   function copyToClipboard(text: string) {
@@ -44,7 +42,7 @@
 
   <!-- SECTION 02: THE ARTIFACT LEDGER -->
   <section class="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
-    {#each downloadData as pkg}
+    {#each downloadData as pkg (pkg.id)}
       <div class="group">
         <!-- Package Header -->
         <div
@@ -143,7 +141,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-zinc-900/50">
-                {#each pkg.artifacts as artifact}
+                {#each pkg.artifacts as artifact (artifact.platform)}
                   <tr class="group/row hover:bg-white/[0.02] transition-colors">
                     <td class="py-8 pr-6">
                       <span

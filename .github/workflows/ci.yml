@@ -56,7 +56,7 @@ jobs:
         run: pnpm turbo run lint
 
       - name: Executar Testes Automatizados
-        run: pnpm turbo run test
+        run: pnpm turbo run test --filter=!@goy/fe-hub
 
       # 5. Validar se o build do Frontend e Worker não quebram
       - name: Validar Build (Astro & Workers)

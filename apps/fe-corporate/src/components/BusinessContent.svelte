@@ -60,7 +60,7 @@
       </div>
 
       <div class="border-t border-zinc-900">
-        {#each Object.values(businessData) as category}
+        {#each Object.values(businessData) as category (category.id)}
           <button
             onclick={() => selectCategory(category.id)}
             class="group relative w-full border-b border-zinc-900 py-10 md:py-12 transition-all duration-500 hover:bg-white/[0.01] text-left block"
@@ -132,7 +132,7 @@
         <div class="flex flex-col gap-10 mb-20">
           <span class="font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-700">Enterprise_Product_Catalog:</span>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {#each selectedCategory?.products ?? [] as product}
+            {#each selectedCategory?.products ?? [] as product (product.name)}
               <div class="group relative bg-zinc-900/30 border border-zinc-900 p-10 hover:border-zinc-700 transition-all duration-500">
                 <div class="flex justify-between items-start mb-8">
                   <div class="space-y-2">
@@ -151,7 +151,7 @@
                 <div class="space-y-4">
                   <span class="text-[8px] font-black uppercase tracking-widest text-zinc-700 block border-b border-zinc-900 pb-2">Key_Features:</span>
                   <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-                    {#each product.features as feature}
+                    {#each product.features as feature (feature)}
                       <li class="flex items-center gap-3">
                         <div class="w-1.5 h-1.5 bg-zinc-800 rounded-full"></div>
                         <span class="text-[10px] font-bold uppercase text-zinc-500 tracking-tight">{feature}</span>

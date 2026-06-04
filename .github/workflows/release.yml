@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUSKY: "0"
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
@@ -34,8 +32,11 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@goy'
+
+      - name: Criar .npmrc Local para Publicação
+        run: |
+          echo "@goy:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}" >> .npmrc
 
       - name: Instalar Dependências
         run: pnpm install --frozen-lockfile

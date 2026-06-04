@@ -5,7 +5,7 @@
     getPublicKeyFromExtension,
     getPublicKeyFromSecret,
     hasNostrExtension,
-  } from '@goy/nostr';
+  } from '@the-goy-company/nostr';
   import { authClient } from '$lib/auth-client';
 
   let status = $state('IDLE'); // IDLE, GENERATING, READY, SYNCING, TRADITIONAL

@@ -1,5 +1,5 @@
 {
-  "name": "@goy/fe-hub",
+  "name": "@the-goy-company/fe-hub",
   "private": true,
   "type": "module",
   "version": "0.0.3",
@@ -16,9 +16,9 @@
   "dependencies": {
     "@astrojs/react": "^5.0.5",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "@goy/nostr": "workspace:*",
-    "@goy/types": "workspace:*",
-    "@goy/ui": "workspace:*",
+    "@the-goy-company/nostr": "workspace:*",
+    "@the-goy-company/types": "workspace:*",
+    "@the-goy-company/ui": "workspace:*",
     "@tailwindcss/vite": "^4.3.0",
     "@tauri-apps/api": "^2.11.0",
     "@tauri-apps/plugin-opener": "^2.5.4",
@@ -37,8 +37,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/svelte": "^7.2.5",
-    "@goy/config-eslint": "workspace:*",
-    "@goy/config-ts": "workspace:*",
+    "@the-goy-company/config-eslint": "workspace:*",
+    "@the-goy-company/config-ts": "workspace:*",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tauri-apps/cli": "^2.11.2",
     "typescript": "^5.9.3"

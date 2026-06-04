@@ -1,4 +1,4 @@
-# @goy/fe-corporate
+# @the-goy-company/fe-corporate
 
 ## 0.0.2
 ### Patch Changes

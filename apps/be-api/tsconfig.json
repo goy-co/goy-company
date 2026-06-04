@@ -1,5 +1,5 @@
 {
-  "extends": "@goy/config-ts/base.json",
+  "extends": "@the-goy-company/config-ts/base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

@@ -64,7 +64,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Build das Aplicações Web
-        run: pnpm turbo run build --filter=@goy/fe-corporate --filter=@goy/fe-identity
+        run: pnpm turbo run build --filter=@the-goy-company/fe-corporate --filter=@the-goy-company/fe-identity
 
       # Deploy das aplicações Astro (mantidas como comentário para futura integração)
       # - name: Deploy Corporate Site

@@ -51,13 +51,13 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20260527.1
         version: 4.20260527.1
-      '@goy/config-eslint':
+      '@the-goy-company/config-eslint':
         specifier: workspace:*
         version: link:../../packages/config-eslint
-      '@goy/config-ts':
+      '@the-goy-company/config-ts':
         specifier: workspace:*
         version: link:../../packages/config-ts
-      '@goy/nostr':
+      '@the-goy-company/nostr':
         specifier: workspace:*
         version: link:../../packages/nostr
       '@libsql/client':
@@ -127,10 +127,10 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.4.0(jiti@2.7.0))
-      '@goy/config-eslint':
+      '@the-goy-company/config-eslint':
         specifier: workspace:*
         version: link:../../packages/config-eslint
-      '@goy/config-ts':
+      '@the-goy-company/config-ts':
         specifier: workspace:*
         version: link:../../packages/config-ts
       '@playwright/test':
@@ -208,13 +208,13 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
         version: 5.2.8
-      '@goy/nostr':
+      '@the-goy-company/nostr':
         specifier: workspace:*
         version: link:../../packages/nostr
-      '@goy/types':
+      '@the-goy-company/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@goy/ui':
+      '@the-goy-company/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tailwindcss/vite':
@@ -266,10 +266,10 @@ importers:
       '@astrojs/svelte':
         specifier: ^7.2.5
         version: 7.2.5(@types/node@25.9.1)(astro@5.18.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(tsx@4.22.3)(typescript@5.9.3)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.32.0)(svelte@5.55.9(@typescript-eslint/types@8.60.0))(tsx@4.22.3)(typescript@5.9.3)(yaml@2.9.0)
-      '@goy/config-eslint':
+      '@the-goy-company/config-eslint':
         specifier: workspace:*
         version: link:../../packages/config-eslint
-      '@goy/config-ts':
+      '@the-goy-company/config-ts':
         specifier: workspace:*
         version: link:../../packages/config-ts
       '@sveltejs/vite-plugin-svelte':
@@ -290,7 +290,7 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
         version: 5.2.8
-      '@goy/nostr':
+      '@the-goy-company/nostr':
         specifier: workspace:*
         version: link:../../packages/nostr
       '@tailwindcss/vite':
@@ -342,10 +342,10 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.4.0(jiti@2.7.0))
-      '@goy/config-eslint':
+      '@the-goy-company/config-eslint':
         specifier: workspace:*
         version: link:../../packages/config-eslint
-      '@goy/config-ts':
+      '@the-goy-company/config-ts':
         specifier: workspace:*
         version: link:../../packages/config-ts
       '@playwright/test':

@@ -4,9 +4,9 @@
   "version": "../package.json",
   "identifier": "com.goy.hub",
   "build": {
-    "beforeDevCommand": "pnpm --filter @goy/fe-hub dev",
+    "beforeDevCommand": "pnpm --filter @the-goy-company/fe-hub dev",
     "devUrl": "http://localhost:4321",
-    "beforeBuildCommand": "pnpm --filter @goy/fe-hub build",
+    "beforeBuildCommand": "pnpm --filter @the-goy-company/fe-hub build",
     "frontendDist": "../dist"
   },
   "app": {

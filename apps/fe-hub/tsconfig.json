@@ -1,5 +1,5 @@
 {
-  "extends": "@goy/config-ts/astro.json",
+  "extends": "@the-goy-company/config-ts/astro.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

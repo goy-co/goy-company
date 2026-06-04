@@ -1,4 +1,4 @@
-import { fetchFullIdentity, subscribeToIdentity, mapEventToAction, signEventWithSecret } from '@goy/nostr';
+import { fetchFullIdentity, subscribeToIdentity, mapEventToAction, signEventWithSecret } from '@the-goy-company/nostr';
 
 // Global Singleton State using Svelte 5 Runes
 // This instance will persist across Astro View Transitions

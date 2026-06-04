@@ -11,33 +11,33 @@ dev: dev-fe-corporate
 
 # Starts the entire ecosystem: Corporate Site, Identity App, and Edge API via Turbo
 dev-grid:
-	pnpm turbo run dev --filter=@goy/fe-corporate --filter=@goy/fe-identity --filter=@goy/be-api
+	pnpm turbo run dev --filter=@the-goy-company/fe-corporate --filter=@the-goy-company/fe-identity --filter=@the-goy-company/be-api
 
 dev-fe-corporate:
-	pnpm turbo run dev --filter=@goy/fe-corporate
+	pnpm turbo run dev --filter=@the-goy-company/fe-corporate
 
 dev-fe-identity:
-	pnpm turbo run dev --filter=@goy/fe-identity
+	pnpm turbo run dev --filter=@the-goy-company/fe-identity
 
 dev-be-api:
-	pnpm turbo run dev --filter=@goy/be-api
+	pnpm turbo run dev --filter=@the-goy-company/be-api
 
 dev-fe-hub:
-	pnpm turbo run dev --filter=@goy/fe-hub
+	pnpm turbo run dev --filter=@the-goy-company/fe-hub
 
 dev-hub-tauri:
-	pnpm turbo run tauri --filter=@goy/fe-hub -- dev
+	pnpm turbo run tauri --filter=@the-goy-company/fe-hub -- dev
 
 # --- Deployment ---
 deploy-be-api:
-	pnpm --filter @goy/be-api deploy
+	pnpm --filter @the-goy-company/be-api deploy
 
 # --- Database ---
 db-migrate-local:
-	pnpm --filter @goy/be-api wrangler d1 migrations apply goy-db --local
+	pnpm --filter @the-goy-company/be-api wrangler d1 migrations apply goy-db --local
 
 db-studio:
-	pnpm --filter @goy/be-api run db:studio
+	pnpm --filter @the-goy-company/be-api run db:studio
 
 # --- Build ---
 build: build-all
@@ -46,16 +46,16 @@ build-all:
 	pnpm turbo run build
 
 build-fe-corporate:
-	pnpm turbo run build --filter=@goy/fe-corporate
+	pnpm turbo run build --filter=@the-goy-company/fe-corporate
 
 build-fe-identity:
-	pnpm turbo run build --filter=@goy/fe-identity
+	pnpm turbo run build --filter=@the-goy-company/fe-identity
 
 build-fe-hub:
-	pnpm turbo run build --filter=@goy/fe-hub
+	pnpm turbo run build --filter=@the-goy-company/fe-hub
 
 build-hub-tauri:
-	pnpm turbo run tauri --filter=@goy/fe-hub -- build
+	pnpm turbo run tauri --filter=@the-goy-company/fe-hub -- build
 
 # --- Quality Control ---
 lint:
@@ -68,7 +68,7 @@ test:
 	pnpm turbo run test
 
 test-nostr:
-	pnpm --filter @goy/nostr test
+	pnpm --filter @the-goy-company/nostr test
 
 check:
 	pnpm turbo run check

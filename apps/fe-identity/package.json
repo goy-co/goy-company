@@ -1,5 +1,5 @@
 {
-  "name": "@goy/fe-identity",
+  "name": "@the-goy-company/fe-identity",
   "private": true,
   "type": "module",
   "version": "0.0.1",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.5",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "@goy/nostr": "workspace:*",
+    "@the-goy-company/nostr": "workspace:*",
     "@tailwindcss/vite": "^4.3.0",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
@@ -36,8 +36,8 @@
     "@astrojs/check": "^0.9.9",
     "@astrojs/svelte": "^7.2.5",
     "@eslint/js": "^10.0.1",
-    "@goy/config-eslint": "workspace:*",
-    "@goy/config-ts": "workspace:*",
+    "@the-goy-company/config-eslint": "workspace:*",
+    "@the-goy-company/config-ts": "workspace:*",
     "@playwright/test": "^1.60.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/jest-dom": "^6.9.1",

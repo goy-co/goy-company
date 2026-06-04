@@ -4,7 +4,7 @@
 
 **Goal:** Consolidate services into apps, rename with functional prefixes and @goy scope, centralize TS/ESLint configs, and standardize on pnpm.
 
-**Architecture:** Functional prefixing for apps (`fe-`, `be-`), scoped naming (`@goy/*`), and configuration inheritance from `packages/`.
+**Architecture:** Functional prefixing for apps (`fe-`, `be-`), scoped naming (`@the-goy-company/*`), and configuration inheritance from `packages/`.
 
 **Tech Stack:** pnpm workspaces, TypeScript, ESLint (Flat Config), Cloudflare Workers, Astro.
 
@@ -22,7 +22,7 @@
 - [ ] **Step 1: Create `packages/config-ts/package.json`**
 ```json
 {
-  "name": "@goy/config-ts",
+  "name": "@the-goy-company/config-ts",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -49,7 +49,7 @@
 - [ ] **Step 3: Create `packages/config-eslint/package.json`**
 ```json
 {
-  "name": "@goy/config-eslint",
+  "name": "@the-goy-company/config-eslint",
   "version": "0.0.0",
   "private": true,
   "main": "index.js"
@@ -80,7 +80,7 @@ git mv design-system/the-goy-company packages/design-system
 - [x] **Step 2: Create `packages/design-system/package.json`**
 ```json
 {
-  "name": "@goy/design-system",
+  "name": "@the-goy-company/design-system",
   "version": "0.0.0",
   "private": true
 }
@@ -115,10 +115,10 @@ rmdir services
 ```
 
 - [ ] **Step 2: Update `package.json` names**
-Update `name` field in each app's `package.json` to `@goy/fe-corporate`, `@goy/fe-identity`, `@goy/fe-hub`, and `@goy/be-api`.
+Update `name` field in each app's `package.json` to `@the-goy-company/fe-corporate`, `@the-goy-company/fe-identity`, `@the-goy-company/fe-hub`, and `@the-goy-company/be-api`.
 
 - [ ] **Step 3: Add config dependencies**
-Add `@goy/config-ts` and `@goy/config-eslint` to `devDependencies` of all apps.
+Add `@the-goy-company/config-ts` and `@the-goy-company/config-eslint` to `devDependencies` of all apps.
 
 - [ ] **Step 4: Run pnpm install**
 Link the new workspace members.
@@ -160,7 +160,7 @@ git commit -m "chore: update workspace, tooling, and api urls"
 - Modify: `apps/*/tsconfig.json`, `apps/*/eslint.config.js`, `apps/*/playwright.config.ts`
 
 - [ ] **Step 1: Refactor `tsconfig.json` files**
-Extend `@goy/config-ts/base.json` or specialized configs.
+Extend `@the-goy-company/config-ts/base.json` or specialized configs.
 
 - [ ] **Step 2: Update Playwright configs**
 Replace `bun run dev` with `pnpm run dev`.

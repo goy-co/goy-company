@@ -10,11 +10,11 @@ Optimize the project structure for better scalability, maintainability, and deve
 ## 2. Proposed Changes
 
 ### 2.1. Directory Restructuring (Apps & Services)
-Consolidate all deployable units under `apps/` with functional prefixes and use the `@goy/` scope for package names:
-- `apps/corporate-site` -> `apps/fe-corporate` (Package: `@goy/fe-corporate`)
-- `apps/identity-app` -> `apps/fe-identity` (Package: `@goy/fe-identity`)
-- `apps/goy-hub` -> `apps/fe-hub` (Package: `@goy/fe-hub`)
-- `services/api-worker` -> `apps/be-api` (Package: `@goy/be-api`)
+Consolidate all deployable units under `apps/` with functional prefixes and use the `@the-goy-company/` scope for package names:
+- `apps/corporate-site` -> `apps/fe-corporate` (Package: `@the-goy-company/fe-corporate`)
+- `apps/identity-app` -> `apps/fe-identity` (Package: `@the-goy-company/fe-identity`)
+- `apps/goy-hub` -> `apps/fe-hub` (Package: `@the-goy-company/fe-hub`)
+- `services/api-worker` -> `apps/be-api` (Package: `@the-goy-company/be-api`)
 
 *Outcome: The `services/` directory will be deprecated.*
 
@@ -26,7 +26,7 @@ Introduce internal configuration packages to enforce consistency:
 
 ### 2.3. Workspace & Tooling Updates
 - **`pnpm-workspace.yaml`**: Update to track only `apps/*` and `packages/*`.
-- **`Makefile` & Root `package.json`**: Update all `--filter` commands to use the new `@goy/` scoped names.
+- **`Makefile` & Root `package.json`**: Update all `--filter` commands to use the new `@the-goy-company/` scoped names.
 - **`wrangler.jsonc`**: Update the worker name to `be-api`.
 - **`docs/SETUP.md`**: Update all file paths and instructions.
 
@@ -34,7 +34,7 @@ Introduce internal configuration packages to enforce consistency:
 
 1. **Scaffold Configuration Packages**: Create `package.json` with proper `exports` and config files for `config-ts` and `config-eslint`.
 2. **Move Design System**: Migrate existing design system files to `packages/design-system` and initialize as a package.
-3. **Restructure Apps**: Rename and move directories using `git mv`. Update their `package.json` names to use the `@goy/` scope.
+3. **Restructure Apps**: Rename and move directories using `git mv`. Update their `package.json` names to use the `@the-goy-company/` scope.
 4. **Update References**:
    - Update `pnpm-workspace.yaml`.
    - Update `Makefile` and root scripts.

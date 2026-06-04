@@ -1,4 +1,4 @@
-# @goy/types
+# @the-goy-company/types
 
 ## 0.0.2
 ### Patch Changes

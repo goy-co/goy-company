@@ -1,5 +1,5 @@
 {
-  "name": "@goy/fe-corporate",
+  "name": "@the-goy-company/fe-corporate",
   "private": true,
   "type": "module",
   "version": "0.0.2",
@@ -36,8 +36,8 @@
     "@astrojs/check": "^0.9.9",
     "@astrojs/svelte": "^7.2.5",
     "@eslint/js": "^10.0.1",
-    "@goy/config-eslint": "workspace:*",
-    "@goy/config-ts": "workspace:*",
+    "@the-goy-company/config-eslint": "workspace:*",
+    "@the-goy-company/config-ts": "workspace:*",
     "@playwright/test": "^1.60.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/jest-dom": "^6.9.1",

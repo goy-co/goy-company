@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
-  import { applyAsGhostOperator, hasNostrExtension } from '@goy/nostr';
+  import { applyAsGhostOperator, hasNostrExtension } from '@the-goy-company/nostr';
 
   let isLoading = $state(true);
   

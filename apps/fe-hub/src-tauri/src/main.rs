@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    goy_hub_lib::run()
+    fe_hub_lib::run()
 }

@@ -1,0 +1,127 @@
+name: CD (Deploy e Release em Produção)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # 1. DEPLOY DO CLOUDFLARE WORKER
+  deploy-worker:
+    name: Deploy API Worker
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'goy-company'
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Instalar o pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Instalar Dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy para o Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          workingDirectory: 'apps/be-api'
+
+  # 2. DEPLOY DOS SITES ASTRO (Corporate Site e Identity App)
+  deploy-web-apps:
+    name: Deploy Web Apps (Astro)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Instalar o pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Instalar Dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Build das Aplicações Web
+        run: pnpm turbo run build --filter=@goy/fe-corporate --filter=@goy/fe-identity
+
+      # Deploy das aplicações Astro (mantidas como comentário para futura integração)
+      # - name: Deploy Corporate Site
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     command: pages deploy apps/fe-corporate/dist --project-name=goy-corporate
+      #
+      # - name: Deploy Identity App
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     command: pages deploy apps/fe-identity/dist --project-name=goy-identity
+
+  # 3. COMPILAÇÃO NATIVA E RELEASE DO TAURI (DESKTOP HUB)
+  release-tauri:
+    name: Release Tauri App
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Setup de Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache do Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './apps/fe-hub/src-tauri -> target'
+
+      - name: Instalar dependências de sistema (Apenas no Linux/Ubuntu)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Instalar o pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Instalar Dependências Node
+        run: pnpm install --frozen-lockfile
+
+      - name: Build e Publicação no GitHub Releases
+        uses: tauri-apps/tauri-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: goy-hub-v__VERSION__
+          releaseName: 'Goy Hub v__VERSION__'
+          releaseBody: 'Release automática gerada pelo pipeline de CD.'
+          releaseDraft: true
+          prerelease: false
+          projectPath: './apps/fe-hub'

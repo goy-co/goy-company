@@ -1,9 +1,7 @@
 {
   "name": "@goy/nostr",
   "version": "0.0.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
+  "private": true,
   "main": "./src/index.ts",
   "scripts": {
     "test": "vitest run"

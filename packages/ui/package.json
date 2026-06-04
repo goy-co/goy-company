@@ -1,6 +1,9 @@
 {
   "name": "@goy/ui",
   "version": "0.0.0",
-  "private": true,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "main": "./src/index.ts"
 }

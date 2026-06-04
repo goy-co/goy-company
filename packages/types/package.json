@@ -1,6 +1,9 @@
 {
   "name": "@goy/types",
   "version": "0.0.1",
-  "private": true,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "main": "./src/index.ts"
 }

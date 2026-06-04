@@ -21,9 +21,11 @@
     "tauri:fe-hub:dev": "pnpm --filter @goy/fe-hub tauri dev",
     "tauri:fe-hub:build": "pnpm --filter @goy/fe-hub tauri build",
     "preview:fe-corporate": "pnpm --filter @goy/fe-corporate preview",
+    "version-packages": "changeset version && node scripts/update-tauri-version.js",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "husky": "^9.1.7",

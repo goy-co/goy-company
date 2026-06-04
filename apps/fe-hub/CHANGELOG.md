@@ -1,5 +1,11 @@
 # @the-goy-company/fe-hub
 
+## 0.0.4
+### Patch Changes
+
+- Updated dependencies [c2b1929]
+  - @the-goy-company/types@0.0.3
+
 ## 0.0.3
 ### Patch Changes
 

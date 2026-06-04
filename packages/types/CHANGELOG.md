@@ -1,5 +1,10 @@
 # @the-goy-company/types
 
+## 0.0.3
+### Patch Changes
+
+- c2b1929: test: validar publicação privada no GitHub Packages com scope correto
+
 ## 0.0.2
 ### Patch Changes
 

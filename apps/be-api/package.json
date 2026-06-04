@@ -10,15 +10,15 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.10",
-    "@cloudflare/workers-types": "^4.20260527.1",
+    "@cloudflare/vitest-pool-workers": "^0.16.13",
+    "@cloudflare/workers-types": "^4.20260604.1",
     "@the-goy-company/config-eslint": "workspace:*",
     "@the-goy-company/config-ts": "workspace:*",
     "@the-goy-company/nostr": "workspace:*",
     "@libsql/client": "^0.17.3",
     "drizzle-kit": "^0.31.10",
     "nostr-tools": "^2.23.5",
-    "vitest": "^3.0.7"
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "better-auth": "^1.6.11",

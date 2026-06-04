@@ -16,6 +16,8 @@ jobs:
   release:
     name: Publicar Versões e Artefactos
     runs-on: ubuntu-latest
+    env:
+      HUSKY: "0"
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
@@ -42,6 +44,7 @@ jobs:
         with:
           version: pnpm run version-packages
           publish: pnpm changeset publish
+          commit: "chore(repo): version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,23 @@
 {
   "name": "@goy-co/design-system",
-  "version": "0.0.0",
-  "private": true
+  "version": "1.0.0",
+  "description": "The Goy Company Design System specifications, tokens, and visual identity guides.",
+  "main": "MASTER.md",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goy-co/goy-company.git",
+    "directory": "packages/design-system"
+  },
+  "keywords": [
+    "design-system",
+    "tokens",
+    "branding",
+    "goy-company"
+  ],
+  "author": "The Goy Company",
+  "license": "BSL-1.1"
 }

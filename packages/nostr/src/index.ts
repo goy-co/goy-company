@@ -3,7 +3,7 @@ import { Relay } from 'nostr-tools/relay';
 import { finalizeEvent } from 'nostr-tools/pure';
 
 export const PRIMAL_RELAY = 'wss://relay.primal.net';
-export const API_GATEWAY = 'https://be-api.goycompany.workers.dev'; // Placeholder for production
+export const GOY_GRID_GATEWAY = 'https://be-api.goycompany.workers.dev';
 
 export const DEFAULT_RELAYS = [
   PRIMAL_RELAY,
@@ -11,6 +11,18 @@ export const DEFAULT_RELAYS = [
   'wss://nos.lol',
   'wss://relay.snort.social'
 ];
+
+export interface NostrConfig {
+  gatewayUrl?: string;
+  relays?: string[];
+  useGateway?: boolean;
+}
+
+const DEFAULT_CONFIG: NostrConfig = {
+  gatewayUrl: GOY_GRID_GATEWAY,
+  relays: DEFAULT_RELAYS,
+  useGateway: true
+};
 
 export function generateIdentity() {
   const privkey = generateSecretKey();
@@ -102,12 +114,12 @@ export function mapEventToAction(event: any): string {
  * Fetches profile metadata and contact list.
  * Strategy: Tries API Worker first (Edge Cache), fallbacks to Direct Relays.
  */
-export async function fetchFullIdentity(pubkey: string, options: { useGateway?: boolean, gatewayUrl?: string } = {}) {
-  const { useGateway = true, gatewayUrl = API_GATEWAY } = options;
+export async function fetchFullIdentity(pubkey: string, options: NostrConfig = {}) {
+  const config = { ...DEFAULT_CONFIG, ...options };
 
-  if (useGateway && typeof window !== 'undefined') {
+  if (config.useGateway && typeof window !== 'undefined') {
     try {
-      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : gatewayUrl;
+      const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : config.gatewayUrl;
       const finalUrl = `${host}/profile/${pubkey}`;
 
       const res = await fetch(finalUrl, { signal: AbortSignal.timeout(4000) });
@@ -162,7 +174,7 @@ export async function fetchFullIdentity(pubkey: string, options: { useGateway?: 
     });
   };
 
-  const results = await Promise.all(DEFAULT_RELAYS.map(r => fetchFromRelay(r)));
+  const results = await Promise.all((config.relays || DEFAULT_RELAYS).map(r => fetchFromRelay(r)));
   const finalMetadata = (results as any[]).find(r => r?.metadata)?.metadata || null;
   const finalFollowing = Math.max(...(results as any[]).map(r => r?.following || 0));
   
@@ -173,9 +185,9 @@ export async function fetchFullIdentity(pubkey: string, options: { useGateway?: 
  * Submits an application to become a Ghost Operator.
  * Requires a signed Nostr event as proof of identity.
  */
-export async function applyAsGhostOperator(event: any, details: { infrastructure: string, experience: string, nip05?: string }) {
+export async function applyAsGhostOperator(event: any, details: { infrastructure: string, experience: string, nip05?: string }, config: NostrConfig = {}) {
   try {
-    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : API_GATEWAY;
+    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : (config.gatewayUrl || GOY_GRID_GATEWAY);
     const res = await fetch(`${host}/ghost-operator/apply`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -192,13 +204,13 @@ export async function applyAsGhostOperator(event: any, details: { infrastructure
  * Uploads a file to the Grid Asset Storage (R2).
  * Requires a signed event for authentication.
  */
-export async function uploadAsset(file: File) {
+export async function uploadAsset(file: File, config: NostrConfig = {}) {
   if (typeof window === 'undefined' || !(window as any).nostr) {
     throw new Error('NOSTR_EXTENSION_REQUIRED');
   }
 
   try {
-    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : API_GATEWAY;
+    const host = window.location.hostname === 'localhost' ? 'http://localhost:8787' : (config.gatewayUrl || GOY_GRID_GATEWAY);
     
     // 1. Sign Auth Event
     const event = await (window as any).nostr.signEvent({

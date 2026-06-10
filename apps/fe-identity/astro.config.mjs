@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 import react from '@astrojs/react';
 import tailwind from '@tailwindcss/vite';
-import sentry from '@sentry/astro';
+import sentry from "@sentry/astro";
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,7 +10,8 @@ export default defineConfig({
     sentry({
       dsn: process.env.SENTRY_DSN,
       sourceMapsUploadOptions: {
-        project: 'fe-identity',
+        org: "goy-company",
+        project: "fe-identity",
         authToken: process.env.SENTRY_AUTH_TOKEN,
       },
     }),

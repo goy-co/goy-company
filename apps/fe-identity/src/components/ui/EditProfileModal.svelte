@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
-  import { uploadAsset } from '@the-goy-company/nostr';
+  import { uploadAsset } from '@goy-co/nostr';
 
   interface Props {
     onClose: () => void;

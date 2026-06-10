@@ -10,20 +10,20 @@
   "kv_namespaces": [
     {
       "binding": "IDENTITY_CACHE",
-      "id": "identity_cache_v1"
+      "id": "KV_ID_PLACEHOLDER"
     }
   ],
   "r2_buckets": [
     {
       "binding": "ASSETS",
-      "bucket_name": "goy-assets-v1"
+      "bucket_name": "R2_BUCKET_PLACEHOLDER"
     }
   ],
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "goy-db",
-      "database_id": "goy_db_v1",
+      "database_id": "D1_ID_PLACEHOLDER",
       "migrations_dir": "./migrations"
     }
   ],
@@ -43,7 +43,6 @@
   ],
   "vars": {
     "ENVIRONMENT": "development",
-    "VERSION": "1.0.0",
-    "BETTER_AUTH_SECRET": "goy_company_secret_key_development_only"
+    "VERSION": "1.0.0"
   }
 }

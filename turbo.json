@@ -1,15 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": ["SENTRY_AUTH_TOKEN", "SENTRY_DSN"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["src/**", "public/**", "astro.config.mjs", "package.json", "tsconfig.json"],
       "outputs": [
         "dist/**",
-        ".astro/**",
-        "src-tauri/target/release/**",
-        "src-tauri/target/apple-darwin/release/**",
-        "src-tauri/target/x86_64-pc-windows-msvc/release/**"
+        ".astro/**"
       ]
     },
     "lint": {

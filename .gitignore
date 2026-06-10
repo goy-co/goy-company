@@ -53,6 +53,7 @@ worker-configuration.d.ts
 *.sqlite-journal
 *.db
 *.db-journal
+apps/be-api/wrangler.jsonc
 
 # Secrets & Certificates
 *.pem

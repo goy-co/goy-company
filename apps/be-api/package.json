@@ -1,5 +1,5 @@
 {
-  "name": "@the-goy-company/be-api",
+  "name": "@goy-co/be-api",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,16 +12,16 @@
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.16.10",
     "@cloudflare/workers-types": "^4.20260527.1",
+    "@goy-co/config-eslint": "workspace:*",
+    "@goy-co/config-ts": "workspace:*",
+    "@goy-co/nostr": "workspace:*",
     "@libsql/client": "^0.17.3",
-    "@the-goy-company/config-eslint": "workspace:*",
-    "@the-goy-company/config-ts": "workspace:*",
-    "@the-goy-company/nostr": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "nostr-tools": "^2.23.5",
     "vitest": "^3.0.7"
   },
   "dependencies": {
-    "@sentry/cloudflare": "^10.56.0",
+    "@sentry/cloudflare": "^10.57.0",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^0.45.2"
   }

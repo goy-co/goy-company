@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 The Goy Company
+ * Licensed under the Business Source License 1.1 (BSL 1.1)
+ * See LICENSE file in the project root for details.
+ */
+
 import { verifyEvent, finalizeEvent } from 'nostr-tools';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq } from 'drizzle-orm';

@@ -7,4 +7,5 @@ export interface Env {
   NOSTR_AGENT: DurableObjectNamespace<NostrAgent>;
   BETTER_AUTH_SECRET: string;
   ENVIRONMENT: string;
+  SENTRY_DSN?: string;
 }

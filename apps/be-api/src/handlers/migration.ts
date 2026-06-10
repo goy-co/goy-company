@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 The Goy Company
+ * Licensed under the Business Source License 1.1 (BSL 1.1)
+ * See LICENSE file in the project root for details.
+ */
+
 import { drizzle } from 'drizzle-orm/d1';
 import { eq } from 'drizzle-orm';
 import { Relay } from 'nostr-tools/relay';
@@ -9,13 +15,14 @@ import { DEFAULT_RELAYS } from '../lib/constants';
 import { Env } from '../lib/types';
 import { getCorsHeaders } from '../index';
 
-export async function handleMigration(request: Request, env: Env): Promise<Response> {
+export async function handleMigration(request: Request, env: Env, session: any): Promise<Response> {
   const corsHeaders = getCorsHeaders(request);
   try {
     const db = drizzle(env.DB, { schema });
-    const body = await request.json() as any;
-    const userId = body.userId;
-    if (!userId) return new Response(JSON.stringify({ error: 'UNAUTHORIZED' }), { status: 401, headers: corsHeaders });
+    if (!session?.user?.id) {
+      return new Response(JSON.stringify({ error: 'UNAUTHORIZED' }), { status: 401, headers: corsHeaders });
+    }
+    const userId = session.user.id;
 
     const d1User = await db.query.user.findFirst({ where: eq(schema.user.id, userId) });
     if (!d1User || !d1User.nsec) return new Response(JSON.stringify({ error: 'USER_NOT_FOUND_OR_NOT_PROVISIONED' }), { status: 404, headers: corsHeaders });

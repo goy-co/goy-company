@@ -1,0 +1,5 @@
+# Cloudflare Workers Local Development Environment Variables (.dev.vars)
+# Copy this file to .dev.vars in apps/be-api/ to configure local development.
+
+# Better Auth Secret key for encryption and session validation
+BETTER_AUTH_SECRET="your_development_secret_key_here"

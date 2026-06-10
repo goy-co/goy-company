@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { grid } from '$lib/grid-state.svelte';
-  import { toNpub } from '@the-goy-company/nostr';
+  import { toNpub } from '@goy-co/nostr';
   import LogDetailModal from './ui/LogDetailModal.svelte';
   import EditProfileModal from './ui/EditProfileModal.svelte';
 

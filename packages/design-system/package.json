@@ -1,8 +1,5 @@
 {
-  "name": "@the-goy-company/design-system",
+  "name": "@goy-co/design-system",
   "version": "0.0.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted"
-  }
+  "private": true
 }

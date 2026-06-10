@@ -15,7 +15,7 @@ jobs:
     if: github.repository_owner == 'the-goy-company'
     steps:
       - name: Checkout do Código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v6
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do Código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v6

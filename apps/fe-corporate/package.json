@@ -17,7 +17,7 @@
     "playwright": "playwright test"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.5",
+    "@astrojs/react": "^5.0.7",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@sentry/astro": "^10.57.0",
     "@tailwindcss/vite": "^4.3.0",

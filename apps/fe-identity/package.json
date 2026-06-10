@@ -15,7 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.5",
+    "@astrojs/react": "^5.0.7",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@goy-co/nostr": "workspace:*",
     "@sentry/astro": "^10.57.0",

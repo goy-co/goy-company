@@ -35,13 +35,13 @@ jobs:
 
       - name: Criar .npmrc Local para Publicação
         run: |
-          echo "@the-goy-company:registry=https://npm.pkg.github.com" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}" >> .npmrc
+          echo "@goy-co:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
 
       - name: Instalar Dependências
         run: pnpm install --frozen-lockfile
 
-      - name: Criar Release PR ou Publicar no GitHub
+      - name: Criar Release PR ou Publicar
         id: changesets
         uses: changesets/action@v1
         with:
@@ -50,3 +50,4 @@ jobs:
           commit: "chore(repo): version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

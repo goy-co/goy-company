@@ -1,6 +1,24 @@
 {
   "name": "@goy-co/types",
-  "version": "0.0.3",
-  "private": true,
-  "main": "./src/index.ts"
+  "version": "1.0.0",
+  "description": "Shared TypeScript definitions and interfaces for the Goy Grid ecosystem.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goy-co/goy-company.git",
+    "directory": "packages/types"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "interfaces",
+    "goy-company"
+  ],
+  "author": "The Goy Company",
+  "license": "BSL-1.1"
 }

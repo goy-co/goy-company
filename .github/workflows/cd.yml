@@ -15,13 +15,13 @@ jobs:
     if: github.repository_owner == 'the-goy-company'
     steps:
       - name: Checkout do Código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v6
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: "pnpm"
@@ -38,7 +38,7 @@ jobs:
               apps/be-api/wrangler.example.jsonc > apps/be-api/wrangler.jsonc
 
       - name: Deploy para o Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: 'apps/be-api'
@@ -51,13 +51,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do Código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Instalar o pnpm
         uses: pnpm/action-setup@v6
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: "pnpm"
@@ -81,13 +81,13 @@ jobs:
 
       # Deploy das aplicações Astro (mantidas como comentário para futura integração)
       # - name: Deploy Corporate Site
-      #   uses: cloudflare/wrangler-action@v3
+      #   uses: cloudflare/wrangler-action@v4
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     command: pages deploy apps/fe-corporate/dist --project-name=goy-corporate
       #
       # - name: Deploy Identity App
-      #   uses: cloudflare/wrangler-action@v3
+      #   uses: cloudflare/wrangler-action@v4
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     command: pages deploy apps/fe-identity/dist --project-name=goy-identity

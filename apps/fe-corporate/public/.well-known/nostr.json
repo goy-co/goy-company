@@ -1,0 +1,8 @@
+{
+  "names": {
+    "_": "npub1..." 
+  },
+  "relays": {
+    "npub1...": ["wss://relay.primal.net", "wss://relay.damus.io"]
+  }
+}

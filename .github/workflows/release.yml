@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUSKY: "0"
+    env:
+      PNPM_SUPPLY_CHAIN_MINIMUM_RELEASE_AGE: 0
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4

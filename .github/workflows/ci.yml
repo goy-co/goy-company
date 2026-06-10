@@ -8,6 +8,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Garante compatibilidade futura com o runner do GitHub
+  PNPM_SUPPLY_CHAIN_MINIMUM_RELEASE_AGE: 0 # Permite pacotes recentes no CI (evita erro com Dependabot)
 
 jobs:
   validate:

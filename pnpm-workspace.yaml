@@ -16,3 +16,7 @@ auditConfig:
     - GHSA-j687-52p2-xcff
     - GHSA-xr5h-phrj-8vxv
     - GHSA-5xrq-8626-4rwp
+
+supplyChainConfig:
+  minimumReleaseAge: 0
+

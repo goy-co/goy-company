@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0 # O commitlint e o turbo precisam do histórico completo para comparar branches
 
       - name: Instalar o pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         # Versão lida automaticamente do package.json (packageManager)
 
       - name: Configurar Node.js

@@ -15,6 +15,7 @@ module.exports = {
         'design-system',
         'config-ts',
         'config-eslint',
+        'deps',
         'repo'
       ]
     ]

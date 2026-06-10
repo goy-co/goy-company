@@ -17,7 +17,6 @@
     "@goy-co/be-api",
     "@goy-co/fe-corporate",
     "@goy-co/fe-identity",
-    "@goy-co/fe-hub",
     "@goy-co/fe-e2e"
   ]
 }

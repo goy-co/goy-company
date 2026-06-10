@@ -1,4 +1,4 @@
-import goyConfig from "@the-goy-company/config-eslint";
+import goyConfig from "@goy-co/config-eslint";
 import svelte from 'eslint-plugin-svelte';
 import tseslint from 'typescript-eslint';
 

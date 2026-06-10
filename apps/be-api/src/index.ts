@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2026 The Goy Company
+ * Licensed under the Business Source License 1.1 (BSL 1.1)
+ * See LICENSE file in the project root for details.
+ */
+
+import { withSentry } from "@sentry/cloudflare";
 import { getAuth } from './lib/auth';
 import { CORS_HEADERS_BASE } from './lib/constants';
 import { Env } from './lib/types';
@@ -26,7 +33,7 @@ export function getCorsHeaders(request: Request): Record<string, string> {
   return headers;
 }
 
-export default {
+const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -47,7 +54,7 @@ export default {
     
     // Identity Migration (Ritual)
     if (request.method === 'POST' && path === '/api/migrate-to-nostr') {
-       return handleMigration(request, env);
+       return handleMigration(request, env, session);
     }
 
     // Better Auth Gateway
@@ -74,3 +81,12 @@ export default {
     return new Response(JSON.stringify({ error: 'NOT_FOUND' }), { status: 404, headers: corsHeaders });
   },
 };
+
+export default withSentry(
+  (env: Env) => ({
+    dsn: env.SENTRY_DSN,
+    enabled: !!env.SENTRY_DSN,
+    environment: env.ENVIRONMENT,
+  }),
+  worker
+);

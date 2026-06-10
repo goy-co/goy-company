@@ -11,33 +11,33 @@ dev: dev-fe-corporate
 
 # Starts the entire ecosystem: Corporate Site, Identity App, and Edge API via Turbo
 dev-grid:
-	pnpm turbo run dev --filter=@the-goy-company/fe-corporate --filter=@the-goy-company/fe-identity --filter=@the-goy-company/be-api
+	pnpm turbo run dev --filter=@goy-co/fe-corporate --filter=@goy-co/fe-identity --filter=@goy-co/be-api
 
 dev-fe-corporate:
-	pnpm turbo run dev --filter=@the-goy-company/fe-corporate
+	pnpm turbo run dev --filter=@goy-co/fe-corporate
 
 dev-fe-identity:
-	pnpm turbo run dev --filter=@the-goy-company/fe-identity
+	pnpm turbo run dev --filter=@goy-co/fe-identity
 
 dev-be-api:
-	pnpm turbo run dev --filter=@the-goy-company/be-api
+	pnpm turbo run dev --filter=@goy-co/be-api
 
 dev-fe-hub:
-	pnpm turbo run dev --filter=@the-goy-company/fe-hub
+	pnpm turbo run dev --filter=@goy-co/fe-hub
 
 dev-hub-tauri:
-	pnpm turbo run tauri --filter=@the-goy-company/fe-hub -- dev
+	pnpm turbo run tauri --filter=@goy-co/fe-hub -- dev
 
 # --- Deployment ---
 deploy-be-api:
-	pnpm --filter @the-goy-company/be-api deploy
+	pnpm --filter @goy-co/be-api deploy
 
 # --- Database ---
 db-migrate-local:
-	pnpm --filter @the-goy-company/be-api wrangler d1 migrations apply goy-db --local
+	pnpm --filter @goy-co/be-api wrangler d1 migrations apply goy-db --local
 
 db-studio:
-	pnpm --filter @the-goy-company/be-api run db:studio
+	pnpm --filter @goy-co/be-api run db:studio
 
 # --- Build ---
 build: build-all
@@ -46,16 +46,16 @@ build-all:
 	pnpm turbo run build
 
 build-fe-corporate:
-	pnpm turbo run build --filter=@the-goy-company/fe-corporate
+	pnpm turbo run build --filter=@goy-co/fe-corporate
 
 build-fe-identity:
-	pnpm turbo run build --filter=@the-goy-company/fe-identity
+	pnpm turbo run build --filter=@goy-co/fe-identity
 
 build-fe-hub:
-	pnpm turbo run build --filter=@the-goy-company/fe-hub
+	pnpm turbo run build --filter=@goy-co/fe-hub
 
 build-hub-tauri:
-	pnpm turbo run tauri --filter=@the-goy-company/fe-hub -- build
+	pnpm turbo run tauri --filter=@goy-co/fe-hub -- build
 
 # --- Quality Control ---
 lint:
@@ -68,7 +68,7 @@ test:
 	pnpm turbo run test
 
 test-nostr:
-	pnpm --filter @the-goy-company/nostr test
+	pnpm --filter @goy-co/nostr test
 
 check:
 	pnpm turbo run check

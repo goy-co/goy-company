@@ -8,5 +8,16 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@goy-co/types",
+    "@goy-co/ui",
+    "@goy-co/design-system",
+    "@goy-co/config-ts",
+    "@goy-co/config-eslint",
+    "@goy-co/be-api",
+    "@goy-co/fe-corporate",
+    "@goy-co/fe-identity",
+    "@goy-co/fe-hub",
+    "@goy-co/fe-e2e"
+  ]
 }

@@ -1,4 +1,4 @@
-import goyConfig from "@the-goy-company/config-eslint";
+import goyConfig from "@goy-co/config-eslint";
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(

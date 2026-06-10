@@ -1,5 +1,5 @@
 {
-  "name": "@the-goy-company/nostr",
+  "name": "@goy-co/nostr",
   "version": "0.0.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

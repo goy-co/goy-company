@@ -6,20 +6,20 @@ The Goy Company monorepo is managed using **pnpm workspaces**. It is designed fo
 
 ### `/apps`
 User interfaces and backend services.
-- **`fe-corporate`**: (@the-goy-company/fe-corporate) The public-facing portal (Astro 5). Focuses on high-speed static delivery and corporate presence.
-- **`fe-identity`**: (@the-goy-company/fe-identity) The "GoyID" dashboard. A Svelte 5-powered SPA embedded within Astro, focused on real-time identity management and asset control.
-- **`fe-hub`**: (@the-goy-company/fe-hub) The desktop gateway (Tauri + Astro).
-- **`be-api`**: (@the-goy-company/be-api) The central nervous system. A Cloudflare Worker handling Hybrid Identity lookups, Better Auth integration, and D1 database management. Includes:
+- **`fe-corporate`**: (@goy-co/fe-corporate) The public-facing portal (Astro 5). Focuses on high-speed static delivery and corporate presence.
+- **`fe-identity`**: (@goy-co/fe-identity) The "GoyID" dashboard. A Svelte 5-powered SPA embedded within Astro, focused on real-time identity management and asset control.
+- **`fe-hub`**: (@goy-co/fe-hub) The desktop gateway (Tauri + Astro).
+- **`be-api`**: (@goy-co/be-api) The central nervous system. A Cloudflare Worker handling Hybrid Identity lookups, Better Auth integration, and D1 database management. Includes:
   - **NostrAgent**: A Durable Object managing real-time WebSocket uplinks for telemetry and decentralized messaging.
 
 ### `/packages`
-Shared logic and UI components under the `@the-goy-company/` scope.
-- **`nostr`**: (@the-goy-company/nostr) Core protocol implementation, signing logic, and relay interaction helpers.
-- **`ui`**: (@the-goy-company/ui) Shared design tokens and primitive components following the Brutalist Luxury spec.
-- **`design-system`**: (@the-goy-company/design-system) The master design specification and tokens.
-- **`types`**: (@the-goy-company/types) Common TypeScript definitions.
-- **`config-ts`**: (@the-goy-company/config-ts) Shared TypeScript configurations.
-- **`config-eslint`**: (@the-goy-company/config-eslint) Shared ESLint configurations.
+Shared logic and UI components under the `@goy-co/` scope.
+- **`nostr`**: (@goy-co/nostr) Core protocol implementation, signing logic, and relay interaction helpers.
+- **`ui`**: (@goy-co/ui) Shared design tokens and primitive components following the Brutalist Luxury spec.
+- **`design-system`**: (@goy-co/design-system) The master design specification and tokens.
+- **`types`**: (@goy-co/types) Common TypeScript definitions.
+- **`config-ts`**: (@goy-co/config-ts) Shared TypeScript configurations.
+- **`config-eslint`**: (@goy-co/config-eslint) Shared ESLint configurations.
 
 ## Identity Flow
 1. **Entry**: User selects Portal Access (Email) or Sync Access (Nostr).

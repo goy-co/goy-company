@@ -1,4 +1,4 @@
-name: Release & Versionamento
+name: CD (Publicar Versões e Artefactos)
 
 on:
   push:
@@ -51,4 +51,3 @@ jobs:
           commit: "chore(repo): version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

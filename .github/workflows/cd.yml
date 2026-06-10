@@ -38,7 +38,7 @@ jobs:
               apps/be-api/wrangler.example.jsonc > apps/be-api/wrangler.jsonc
 
       - name: Deploy para o Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: 'apps/be-api'
@@ -81,13 +81,13 @@ jobs:
 
       # Deploy das aplicações Astro (mantidas como comentário para futura integração)
       # - name: Deploy Corporate Site
-      #   uses: cloudflare/wrangler-action@v3
+      #   uses: cloudflare/wrangler-action@v4
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     command: pages deploy apps/fe-corporate/dist --project-name=goy-corporate
       #
       # - name: Deploy Identity App
-      #   uses: cloudflare/wrangler-action@v3
+      #   uses: cloudflare/wrangler-action@v4
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     command: pages deploy apps/fe-identity/dist --project-name=goy-identity

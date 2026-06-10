@@ -9,18 +9,24 @@ updates:
       time: "09:00"
       timezone: "Europe/Lisbon"
     open-pull-requests-limit: 10
+    # Permitir que o bot faça commit das atualizações do pnpm-lock.yaml corretamente
+    versioning-strategy: increase
     groups:
       # Agrupa atualizações de dev dependencies numa só PR
       dev-dependencies:
         dependency-type: "development"
-      # Agrupa os pacotes do turbo e changesets
-      build-tools:
+      # Agrupa ferramentas de build e infraestrutura
+      infrastructure-tools:
         patterns:
           - "turbo"
           - "@changesets/*"
           - "@commitlint/*"
           - "husky"
           - "prettier*"
+          - "eslint*"
+          - "typescript"
+          - "vitest"
+          - "wrangler"
 
   # Atualizar GitHub Actions mensalmente
   - package-ecosystem: "github-actions"

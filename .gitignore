@@ -67,3 +67,6 @@ apps/be-api/wrangler.jsonc
 
 # Husky
 .husky/_/
+
+# Sentry
+.sentryclirc

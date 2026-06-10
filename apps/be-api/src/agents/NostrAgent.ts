@@ -3,12 +3,13 @@ import { Relay } from 'nostr-tools/relay';
 import { nip19 } from 'nostr-tools';
 import { Env } from "../lib/types";
 import { anchorIdentity } from "../lib/identity";
+import { instrumentDurableObjectWithSentry } from "@sentry/cloudflare";
 
 /**
  * NOSTR AGENT: Stateful listener and broadcaster.
  * Acts as the real-time bridge between the Decentralized Grid and the Goy ID Cockpit.
  */
-export class NostrAgent extends DurableObject {
+class NostrAgentBase extends DurableObject {
   private sessions = new Set<WebSocket>();
   private relayConnections: Map<string, any> = new Map();
   private pubkey: string = "";
@@ -155,3 +156,10 @@ export class NostrAgent extends DurableObject {
     }
   }
 }
+
+export const NostrAgent = instrumentDurableObjectWithSentry(
+  (env: Env) => ({
+    dsn: env.SENTRY_DSN,
+    tracesSampleRate: 1.0,
+  })
+)(NostrAgentBase);

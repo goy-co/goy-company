@@ -13,6 +13,6 @@
     "@goy-co/design-system",
     "@goy-co/config-ts",
     "@goy-co/config-eslint",
-    "@goy-co/e2e"
+    "@goy-co/fe-e2e"
   ]
 }

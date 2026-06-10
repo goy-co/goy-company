@@ -1,6 +1,6 @@
 # The Goy Company - Global Build System
 
-.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api dev-fe-hub dev-hub-tauri deploy-be-api build build-all build-fe-corporate build-fe-identity build-fe-hub build-hub-tauri lint test check db-migrate-local db-studio clean help
+.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api deploy-be-api build build-all build-fe-corporate build-fe-identity lint test check db-migrate-local db-studio clean help change release
 
 # --- Installation ---
 install:
@@ -21,12 +21,6 @@ dev-fe-identity:
 
 dev-be-api:
 	pnpm turbo run dev --filter=@goy-co/be-api
-
-dev-fe-hub:
-	pnpm turbo run dev --filter=@goy-co/fe-hub
-
-dev-hub-tauri:
-	pnpm turbo run tauri --filter=@goy-co/fe-hub -- dev
 
 # --- Deployment ---
 deploy-be-api:
@@ -51,11 +45,22 @@ build-fe-corporate:
 build-fe-identity:
 	pnpm turbo run build --filter=@goy-co/fe-identity
 
-build-fe-hub:
-	pnpm turbo run build --filter=@goy-co/fe-hub
+# --- Release Management (Changesets) ---
 
-build-hub-tauri:
-	pnpm turbo run tauri --filter=@goy-co/fe-hub -- build
+# Interactive command to create a new change log entry
+change:
+	@echo "Creating a new changeset..."
+	@pnpm changeset
+
+# Automates the release process: build, test and push changes
+release: build test
+	@echo "Ready to release. Ensuring all changes are committed..."
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		echo "Error: Working directory is not clean. Commit your changes first."; \
+		exit 1; \
+	fi
+	@git push github HEAD
+	@echo "Release branch pushed. Create a PR to main to trigger the versioning pipeline."
 
 # --- Quality Control ---
 lint:
@@ -78,7 +83,6 @@ clean:
 	pnpm turbo run clean || true
 	find . -name "dist" -type d -exec rm -rf {} +
 	find . -name ".astro" -type d -exec rm -rf {} +
-	rm -rf apps/fe-hub/src-tauri/target
 
 # --- Help ---
 help:
@@ -92,13 +96,11 @@ help:
 	@echo "  dev-fe-corporate Run fe-corporate in dev mode"
 	@echo "  dev-fe-identity  Run fe-identity in dev mode"
 	@echo "  dev-be-api       Run be-api in dev mode"
-	@echo "  dev-fe-hub       Run fe-hub (Astro) in dev mode"
-	@echo "  dev-hub-tauri    Run fe-hub in Tauri desktop client"
 	@echo "  db-migrate-local Apply D1 migrations to local development database"
 	@echo "  db-studio        Open Drizzle Studio to visualize local data"
 	@echo "  build-all        Build all workspace projects (Turbo optimized)"
-	@echo "  build-fe-hub     Build fe-hub static frontend"
-	@echo "  build-hub-tauri  Build and package fe-hub Tauri native client"
+	@echo "  change           Create a new changeset (interactive)"
+	@echo "  release          Build, test and push to trigger CI/CD release pipeline"
 	@echo "  lint             Lint all projects"
 	@echo "  test             Run all tests"
 	@echo "  test-nostr       Run tests for the Nostr package"

@@ -17,7 +17,8 @@ module.exports = {
         'config-eslint',
         'repo',
         'deps',
-        'deps-dev'
+        'deps-dev',
+        'docs'
       ]
     ]
   }

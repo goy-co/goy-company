@@ -20,3 +20,6 @@ auditConfig:
 supplyChainConfig:
   minimumReleaseAge: 0
 
+minimumReleaseAgeExclude:
+  - '@cloudflare/workers-types@4.20260610.1'
+  - astro@6.4.6

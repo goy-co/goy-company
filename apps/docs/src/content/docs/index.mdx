@@ -1,0 +1,36 @@
+---
+title: The Goy Company // Hub de Documentação
+description: O centro da nossa infraestrutura soberana.
+template: splash
+hero:
+  tagline: Reclaim your digital existence, secure your legacy.
+  image:
+    file: ../../../assets/houston.svg
+  actions:
+    - text: Começar a Ler
+      link: /foundation/manifesto
+      icon: right-arrow
+      variant: primary
+    - text: Ver GitHub
+      link: https://github.com/goy-co/goy-company
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## O Ecossistema
+
+<CardGrid stagger>
+	<Card title="Goy ID" icon="pencil">
+		Identidade soberana baseada no protocolo Nostr.
+	</Card>
+	<Card title="Grid Engine" icon="add-document">
+		Infraestrutura distribuída no Edge da Cloudflare.
+	</Card>
+	<Card title="Brutalist UI" icon="setting">
+		Design system focado em performance e contraste.
+	</Card>
+	<Card title="Open Source" icon="open-book">
+		Código fonte disponível sob licença BSL-1.1.
+	</Card>
+</CardGrid>

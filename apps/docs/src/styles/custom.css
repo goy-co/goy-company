@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-mono: 'JetBrains Mono Variable', monospace;
+  --color-primary: #2563EB;
+  --color-accent: #F97316;
+}
+
+:root {
+  --sl-font-mono: 'JetBrains Mono Variable', monospace;
+  --sl-color-accent-low: #1e293b;
+  --sl-color-accent: #2563EB;
+  --sl-color-accent-high: #3b82f6;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #f8fafc;
+  --sl-color-gray-2: #e2e8f0;
+  --sl-color-gray-3: #94a3b8;
+  --sl-color-gray-4: #64748b;
+  --sl-color-gray-5: #334155;
+  --sl-color-gray-6: #1e293b;
+  --sl-color-black: #0f172a;
+}
+
+/* Brutalist Documentation Styling */
+.sl-markdown-content h1, 
+.sl-markdown-content h2, 
+.sl-markdown-content h3 {
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  font-weight: 900;
+}
+
+.sl-markdown-content pre {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0;
+}

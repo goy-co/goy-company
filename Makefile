@@ -1,6 +1,6 @@
 # The Goy Company - Global Build System
 
-.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api deploy-be-api build build-all build-fe-corporate build-fe-identity lint test check db-migrate-local db-studio clean help change release
+.PHONY: install dev dev-grid dev-fe-corporate dev-fe-identity dev-be-api dev-docs deploy-be-api build build-all build-fe-corporate build-fe-identity build-docs lint test check db-migrate-local db-studio clean help change release
 
 # --- Installation ---
 install:
@@ -9,15 +9,18 @@ install:
 # --- Development ---
 dev: dev-fe-corporate
 
-# Starts the entire ecosystem: Corporate Site, Identity App, and Edge API via Turbo
+# Starts the entire ecosystem: Corporate Site, Identity App, Docs and Edge API via Turbo
 dev-grid:
-	pnpm turbo run dev --filter=@goy-co/fe-corporate --filter=@goy-co/fe-identity --filter=@goy-co/be-api
+	pnpm turbo run dev --filter=@goy-co/fe-corporate --filter=@goy-co/fe-identity --filter=@goy-co/be-api --filter=@goy-co/docs
 
 dev-fe-corporate:
 	pnpm turbo run dev --filter=@goy-co/fe-corporate
 
 dev-fe-identity:
 	pnpm turbo run dev --filter=@goy-co/fe-identity
+
+dev-docs:
+	pnpm turbo run dev --filter=@goy-co/docs
 
 dev-be-api:
 	pnpm turbo run dev --filter=@goy-co/be-api
@@ -44,6 +47,9 @@ build-fe-corporate:
 
 build-fe-identity:
 	pnpm turbo run build --filter=@goy-co/fe-identity
+
+build-docs:
+	pnpm turbo run build --filter=@goy-co/docs
 
 # --- Release Management (Changesets) ---
 
@@ -92,13 +98,15 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  install          Install all dependencies"
-	@echo "  dev-grid         Run all apps (Corporate, Identity, API) in parallel via Turbo"
+	@echo "  dev-grid         Run all apps (Corporate, Identity, Docs, API) via Turbo"
 	@echo "  dev-fe-corporate Run fe-corporate in dev mode"
 	@echo "  dev-fe-identity  Run fe-identity in dev mode"
+	@echo "  dev-docs         Run docs hub in dev mode"
 	@echo "  dev-be-api       Run be-api in dev mode"
 	@echo "  db-migrate-local Apply D1 migrations to local development database"
 	@echo "  db-studio        Open Drizzle Studio to visualize local data"
 	@echo "  build-all        Build all workspace projects (Turbo optimized)"
+	@echo "  build-docs       Build documentation site only"
 	@echo "  change           Create a new changeset (interactive)"
 	@echo "  release          Build, test and push to trigger CI/CD release pipeline"
 	@echo "  lint             Lint all projects"

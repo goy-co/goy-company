@@ -1,0 +1,10 @@
+{
+  "extends": "../../packages/config-ts/astro.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "**/*", "../../packages/ui/src/**/*"]
+}

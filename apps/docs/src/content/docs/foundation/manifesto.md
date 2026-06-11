@@ -1,4 +1,7 @@
-# Manifesto // The Goy Company
+---
+title: Manifesto // The Goy Company
+description: A nossa declaração de guerra elegante contra o feudalismo digital.
+---
 
 **Nós não nascemos para ser utilizadores. Nascemos para ser donos.**
 
